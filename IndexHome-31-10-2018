@@ -1,0 +1,917 @@
+<apex:page showHeader="false" standardStylesheets="false" controller="IndexHomeCntrl" docType="html-5.0" >
+   <!-- Begin Default Content REMOVE THIS -->
+   <c:head_include ></c:head_include>
+   <style>
+      /* Floating Social Media Bar Style Starts Here */
+      .fl-fl {
+      background: #0777d8;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      padding: 5px 0px 0px 5px;
+      width: 190px;
+      position: fixed;
+      right: -145px;
+      z-index: 1000;
+      font: normal normal 10px Arial;
+      -webkit-transition: all .25s ease;
+      -moz-transition: all .25s ease;
+      -ms-transition: all .25s ease;
+      -o-transition: all .25s ease;
+      transition: all .25s ease;
+      z-index: 9999;
+      }
+      .fa {
+      font-size: 15px;
+      color: #fff;
+      padding: 8px 0;
+      width: 25px;
+      margin-left: 10px;
+      }
+      .fl-fl:hover {
+      right: 0;
+      }
+      .fl-fl a {
+      color: #fff !important;
+      text-decoration: none;
+      text-align: center;
+      line-height: 30px!important;
+      vertical-align: top!important;
+      }
+      .float-fb {
+      top: 250px;
+      z-index: 9999;
+      }
+      .float-tw {
+      top: 290px;
+      }
+      .float-gp {
+      top: 330px;
+      }
+      .float-rs {
+      top: 370px;
+      }
+      .float-ig {
+      top: 380px;
+      }
+      .float-pn {
+      top: 435px;
+      }
+      /* Floating Social Media Bar Style Ends Here */
+      .body-background{
+      background:#efefef;
+      padding: 30px 0 0 0;
+      }
+      #custom-footer-mmd{
+      margin-top:0px!important;
+      }
+      .bottom-nav-background{
+      background:#efefef;
+      padding-top:20px;
+      }
+      .bottom-nav{
+      padding: 15px 0px 15px 0px;
+      text-align: center;
+      font-size:14px;
+      color:#0067a4;
+      }
+      .bottom-nav a{
+      padding: 15px 0px 15px 0px;
+      text-align: center;
+      font-size:14px;
+      color:#0067a4;
+      }
+      .border-left{
+      border-left:1px solid #0067a4;
+      }
+      .border-right{
+      border-right:1px solid #0067a4;
+      }
+      #login-section{
+        background-color: #0096ee;
+        background-repeat: repeat-x;
+        background: linear-gradient(to bottom right,#003655 0,#0066a1 50%,#0096ee 100%);
+        margin:20px 0 0px 0;
+      }
+      .become-partner{
+      text-align:left;
+      color:#fff;
+      padding: 20px 20px 20px 20px;
+      }
+      .become-partner h3{
+      font-size: 32px !important;
+      line-height: 40px;
+      }
+      .reg-button{
+      background:#fff;
+      width:100%;
+      border-radius: 0px;
+      font-family: centrale_sans_book,tahoma,arial,helvetica,sans-serif;
+      font-size:14px;
+      color:#0067a4;
+      height:36px;
+      padding: 0 10px;
+      border:none;
+      }
+      .login-section{
+      background:#fff;
+      height:100%;
+      min-height:100%;
+      }
+      .form-control{
+      height:38px!important;
+      font-size:14px;
+      padding: 0 15px!important;
+      }
+      .form-top-center h3{
+      font-size:25px!important;
+      }
+      .form-bottom {
+      padding: 0px 20px 14px 24px!important;
+      background: #ffffff;
+      text-align: left;
+      }
+      .margin-padding{
+      margin:0px;
+      padding:0px;
+      }
+      .signin-button{
+      width:100%;
+      font-size: 14px;
+      height: 36px;
+      padding: 0 10px;
+      border: none;
+      border-radius: 0px;
+      }
+      .lbg{
+      background:url('http://www.mmd-p.com/wp-content/uploads/2015/08/Lifestyle-X-line_Store_HR500x500.png');
+      height: 330px;
+      }
+      .bg-color
+      {
+      position: sticky;
+      top: 0px;
+      z-index:9999;
+      }
+      @media (max-width: 767px){
+      .dropdown
+      {
+      display: none;
+      }
+      .navbar-nav
+      {
+      background-color: #245463;
+      border-bottom: none;
+      }
+      .navbar-collapse .collapse .in
+      {
+      height: 0px!important;
+      }
+      }
+      .bg-color
+      {
+      background-color:rgba(0, 103, 164, 0.95);
+      }
+      .second-tab
+      {
+      border-bottom: none!important;
+      margin: 0px;
+      }
+      .second-tab li
+      {
+      text-align: center;
+      width: auto;
+      min-width: 16.3%;
+      }
+      .second-tab li strong
+      {   font-family: centrale_sans_book,tahoma,arial,helvetica,sans-serif;
+      }
+      .navbar-inverse .navbar-nav>.active>a, 
+      .navbar-inverse .navbar-nav>.active>a:focus, 
+      .navbar-inverse .navbar-nav>.active>a:hover
+      {
+      background-color: #fff;
+      color: #44848d;
+      }
+      .second-tab li a
+      {
+      padding: 11px 0px;
+      }
+      .second-tab
+      {
+      width: 100%;
+      }
+      .second-tab li:hover  a
+      {
+      color: #0067a4!important;
+      }
+      .second-tab>li>a
+      {
+      margin: 0px!important;
+      }
+      .bg-color
+      {
+      position: sticky;
+      top: 0px;
+      z-index:9999;
+      }
+      @media(max-width:767px){
+      #myNavbar
+      {
+      position: absolute;
+      width: 100%;
+      }
+      .navbar-nav
+      {
+      width: 100%;
+      }
+      }
+      .second-tab 
+      {
+      margin: 0px;
+      padding: 0px;
+      }
+      .second-tab li 
+      {
+      list-style-type: none;
+      display: inline-block;
+      padding: 12px 0px;
+      color: #fff; 
+      }
+      .second-tab li a
+      {
+      color: #fff;
+      text-decoration: none;
+      }
+      .second-tab li:hover
+      {
+      color: #0067a4;;  
+      }
+      .second-tab .active
+      {
+      background-color: #fff;
+      font-weight:600;
+      }
+      .second-tab .active a{
+      color: #0067a4;; 
+      }
+      li.dropdown:hover > ul.dropdown-menu {
+      display: block;    
+      }
+      .drop-list li
+      {
+      display: block;  
+      padding: 0px;
+      margin: 0px 20px;
+      border-bottom: 1px solid #156570;  
+      width: 80%;
+      text-align: left;
+      }
+      .drop-list li:last-child
+      {
+      border-bottom: none!important;
+      }
+      .drop-list 
+      {
+      width: 240px;
+      background: #0067a4;
+      margin: 0px;
+      border-radius:0;
+      }
+      .list-drop
+      {
+      float: none;
+      }
+      .drop-list li a
+      {
+      color:#0067a4!important;
+      }
+      .drop-list li:hover
+      {
+      background-color: transparent!important;
+      }
+      .drop-list li a:hover
+      {
+      background-color: transparent!important;
+      }
+      .list-drop
+      {
+      margin-left: -4px;
+      }
+      .second-tab li:hover
+      {
+      background: #fff !important;
+      color:#0067a4;
+      }
+      /*custom css */
+      .bg-image
+      {
+      background-image: url('{!URLFOR($Resource.img, '/img/backgrounds/index-support-banner.jpg')}');
+      background-size: cover;
+      }
+      .gif-div
+      {
+      /*   display: block;
+      position: absolute;*/
+      width: 100%;
+      z-index: 0;
+      height: 160px;
+      left: 0;
+      top: 0;
+      background-color: transparent;
+      background-repeat: repeat-x;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.25) 0, rgba(0,0,0,0.25) 20%, transparent 100%);
+      }
+      .hero-content img
+      {
+      width: 30%;
+      }
+      .hero-content h2
+      {
+      letter-spacing: -1px;
+      font-size: 50px;
+      line-height: 60px;
+      color: #0777d8;
+      font-family: centrale_sans_light,tahoma,arial,helvetica,sans-serif;
+      font-weight: normal!important;
+      margin-bottom: 21px; 
+      }
+      .hero-content
+      {
+      margin: 7% 0px;
+      }    
+      .clearfix
+      {
+      clear: both;
+      }
+      .fa-flag
+      {
+      margin-top: 10px;
+      margin-right: 20px;
+      margin-bottom: 10px;
+      }
+      .top-header{
+      background-color: rgb(0, 103, 164);
+      height: 60px;
+      }
+      /* top nav search */
+      #top-nav-search input[type=search] {
+      width: 18px;
+      padding-left: 10px;
+      color: transparent;
+      cursor: pointer;
+      }
+      #top-nav-search input[type=search]:hover {
+      background-color: #fff;
+      }
+      #top-nav-search input[type=search]:focus {
+      width: 130px;
+      padding-left: 32px;
+      color: #000;
+      background-color: #fff;
+      cursor: auto;
+      }
+      #top-nav-search input:-moz-placeholder {
+      color: transparent;
+      }
+      #top-nav-search input::-webkit-input-placeholder {
+      color: transparent;
+      }
+      input {
+      outline: none;
+      }
+      input[type=search] {
+      -webkit-appearance: textfield;
+      -webkit-box-sizing: content-box;
+      font-family: inherit;
+      font-size: 100%;
+      }
+      input::-webkit-search-decoration,
+      input::-webkit-search-cancel-button {
+      display: none; 
+      }
+      input[type=search] {
+      background: #ededed url(https://static.tumblr.com/ftv85bp/MIXmud4tx/search-icon.png) no-repeat 9px center;
+      border: solid 1px #ccc;
+      padding: 9px 10px 9px 32px;
+      width: 40px;
+      -webkit-border-radius: 10em;
+      -moz-border-radius: 10em;
+      border-radius: 10em;
+      -webkit-transition: all .5s;
+      -moz-transition: all .5s;
+      transition: all .5s;
+      }
+      input[type=search]:focus {
+      width: 130px;
+      background-color: #fff;
+      border-color: #fff;
+      -webkit-box-shadow: 0 0 5px rgba(109,207,246,.5);
+      -moz-box-shadow: 0 0 5px rgba(109,207,246,.5);
+      box-shadow: 0 0 5px rgba(109,207,246,.5);
+      }
+      input:-moz-placeholder {
+      color: #999;
+      }
+      input::-webkit-input-placeholder {
+      color: #999;
+      }
+      .profile-search{
+      float:right;
+      text-align:right;
+      padding: 8px 0 0 8px;
+      }
+      
+      /*login*/
+      
+
+#login {
+  border-right: none;
+}
+#login:hover,
+#login .active {
+  background: #fff !important;
+   color: #0067a4;
+}
+
+#login-trigger a {
+  display: inline-block;
+  *display: inline;
+  *zoom: 1;
+  height: 25px;
+  line-height: 25px;
+  text-decoration: none;
+
+}
+
+
+#login-trigger {
+ border:none;
+}
+
+#login:hover,
+#login .active {
+  background: #fff !important;
+   color: #0067a4;
+}
+
+#login-content {
+  display: none;
+  position: absolute;
+  top: 49px;
+      right: 15px !important;
+  z-index: 999;    
+  background: #fff;
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#fff), to(#eee));
+  background-image: -webkit-linear-gradient(top, #fff, #eee);
+  background-image: -moz-linear-gradient(top, #fff, #eee);
+  background-image: -ms-linear-gradient(top, #fff, #eee);
+  background-image: -o-linear-gradient(top, #fff, #eee);
+  background-image: linear-gradient(top, #fff, #eee);  
+  padding: 15px;
+  -moz-box-shadow: 0 2px 2px -1px rgba(0,0,0,.9);
+  -webkit-box-shadow: 0 2px 2px -1px rgba(0,0,0,.9);
+  box-shadow: 0 2px 2px -1px rgba(0,0,0,.9);
+  -moz-border-radius: 3px 0 3px 3px;
+  -webkit-border-radius: 3px 0 3px 3px;
+  border-radius: 3px 0 3px 3px;
+}
+
+#login-content {
+  right: 0;
+  width: 270px;  
+}
+
+/*--------------------*/
+
+#inputs input {
+  background: #f1f1f1;
+  padding: 6px 5px;
+  margin: 0 0 5px 0;
+  width: 233px;
+  border: 1px solid #ccc;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  -moz-box-shadow: 0 1px 1px #ccc inset;
+  -webkit-box-shadow: 0 1px 1px #ccc inset;
+  box-shadow: 0 1px 1px #ccc inset;
+}
+
+#inputs input:focus {
+  background-color: #fff;
+  border-color: #e8c291;
+  outline: none;
+  -moz-box-shadow: 0 0 0 1px #e8c291 inset;
+  -webkit-box-shadow: 0 0 0 1px #e8c291 inset;
+  box-shadow: 0 0 0 1px #e8c291 inset;
+}
+
+/*--------------------*/
+
+#login #actions {
+  margin: 10px 0 0 0;
+}
+
+#login #submit {        
+  background-color: #d14545;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  text-shadow: 0 1px 0 rgba(0,0,0,.5);
+  -moz-box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;
+  -webkit-box-shadow: 0 0 1px rgba(0, 0, 0, 0.3), 0 1px 0 rgba(255, 255, 255, 0.3) inset;
+  border: 1px solid #7e1515;
+  float: left;
+  height: 30px;
+  padding: 0;
+  width: 100px;
+  cursor: pointer;
+  font: bold 14px Arial, Helvetica;
+  color: #fff;
+}
+
+#login #submit:hover,
+#login #submit:focus {      
+  background-color: #e97171;
+}   
+
+#login #submit:active {     
+  outline: none;    
+}
+
+#login #submit::-moz-focus-inner {
+  border: none;
+}
+
+#login label {
+  float: right;
+  line-height: 30px;
+}
+
+#login label input {
+  position: relative;
+  top: 2px;
+  right: 2px;
+}
+
+/*--------------------*/
+
+#sign-inputs input {
+  background: #f1f1f1;
+  padding: 6px 5px;
+  margin: 0 0 5px 0;
+  width: 233px;
+  border: 1px solid #ccc;
+  -moz-border-radius: 3px;
+  -webkit-border-radius: 3px;
+  border-radius: 3px;
+  -moz-box-shadow: 0 1px 1px #ccc inset;
+  -webkit-box-shadow: 0 1px 1px #ccc inset;
+  box-shadow: 0 1px 1px #ccc inset;
+}
+
+#sign-inputs input:focus {
+  background-color: #fff;
+  border-color: #e8c291;
+  outline: none;
+  -moz-box-shadow: 0 0 0 1px #e8c291 inset;
+  -webkit-box-shadow: 0 0 0 1px #e8c291 inset;
+  box-shadow: 0 0 0 1px #e8c291 inset;
+}
+
+/*--------------------*/
+   </style>
+   <!--body section -->
+   <body>
+      <!--Top Nav-->
+      <section class="top-header">
+         <div class="container">
+            <div class="row">
+               <div class="col-md-6 col-lg-6 col-sm-6 col-xs-6">
+                  <apex:image url="{!URLFOR($Resource.img, 'img/logo.png')}"/>
+               </div>
+               <div class="col-md-6 col-lg-6 col-sm-6 col-xs-6">
+                  <div class="profile-search">
+                     <form id="top-nav-search">
+                        <input type="search" placeholder="Search" />
+                     </form>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </section>
+      <!--Top Nav-->
+      <!--header-->
+      <header class="bg-image">
+         <div class="gif-div">
+            <div class="container">
+               <div class="row">
+                  <div class="col-md-12 col-sm-12 col-xs-12">
+                     <div class="hero-content">
+                        <h2>Philips Professional <br/>Display Solutions</h2>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="clearfix"></div>
+      </header>
+      <!--header close-->
+      <div class="bg-color">
+         <div class="container">
+            <div class="row">
+               <div class="col-md-12 col-sm-12 col-xs-12">
+                  <ul class="second-tab">
+                     <li><a href="#">Home</a></li>
+                     <li><a href="https://cmnd.io/" target="_blank">CMND</a></li>
+                     <li><a href="http://professionaldisplayapps.com/" target="_blank">App Store</a></li>
+                     <li><a href="http://www.my-choice.tv/" target="_blank">My Choice</a></li>
+                     <li><a href="#">Ticket Support </a></li>
+                     <!-- <li class="dropdown list-drop">
+                        <a class="dropdown-toggle" data-toggle="dropdown">  MyChoice</a>
+                        <ul class="dropdown-menu dropdown-menu-custom drop-list" role="menu" >
+                           <li><a href="#">Action</a></li>
+                           <li><a href="#">Another action</a></li>
+                           <li><a href="#">Something else here</a></li>
+                        </ul>
+                        </li>-->
+                     <li id="login"> <a id="login-trigger" href="#">Login as a Customer <span>▼</span></a>
+                        <div id="login-content">
+                <apex:form >
+                    
+                    <fieldset id="inputs">
+                        <apex:input type="text" value="{!customerusername}" html-placeholder="Your email address"/>
+                        <apex:inputSecret value="{!customerpassword}" html-placeholder="Password"  />
+
+                    </fieldset>
+                    <fieldset id="actions">
+                        <apex:commandButton value="Log In" action="{!customerLogIn}" reRender="cusmsg"/>
+                        <apex:outputPanel id="cusmsg"><apex:messages style="color:red;" /></apex:outputPanel>
+
+                    </fieldset>
+                </apex:form>
+            </div>
+                     
+                     </li>
+                  </ul>
+               </div>
+            </div>
+         </div>
+      </div>
+      <!--login section -->
+      <apex:form >
+      <section class="body-background">
+         <div class="container">
+            <div class="row" id="login-section" >
+               <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12 lbg">
+                  <div class=""></div>
+               </div>
+               <!--Login Section-->
+               <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12 margin-padding">
+                  <div class="form-box">
+                     <div class="form-top">
+                        <div class="form-top-center">
+                           <h3>Log in to <span style="color:#0271b1;">Partner Portal</span></h3>
+                           <p>Don't have a Philips account yet? <br/><a href="/apex/ProductCaseRegister">Create one here.</a></p>
+                        </div>
+                     </div>
+                     <div class="form-bottom">
+                        <div class="login-form">
+                           <div class="form-group">
+                              <label class="sr-only" for="form-username">Username</label>
+                              <!--<input type="text" name="form-username" placeholder="Email@address.com" class="form-username form-control" id="formusername" required="true"  autocomplete="false" tabindex="1"/>-->
+                              <apex:input type="text" value="{!username}" html-placeholder="Email@address.com" styleClass="form-username form-control" tabindex="1"/>
+                           </div>
+                           <div class="form-group">
+                              <label class="sr-only" for="form-password">Password</label>
+                             <!-- <input type="password" name="form-password" placeholder="Password" class="form-password form-control" id="formpassword" required="true" tabindex="2" />-->
+                              <apex:inputSecret value="{!password}" html-placeholder="Password" styleClass="form-password form-control" tabindex="1" />
+                           </div>
+                           <!--<button class="signin-button btn-primary" tabindex="3">Sign In</button>-->
+                           <apex:commandButton styleClass="signin-button btn-primary" tabindex="3" value="Sign In" action="{!doSignIn}" reRender="msg"/>
+                           <apex:outputPanel id="msg" ><apex:messages style="color:red;" /></apex:outputPanel>
+                        </div>
+                        <p class="forgotten"><a href="/apex/UserForgotPassword">I have forgotten my password <span><i class="fa fa-caret-right" aria-hidden="true"></i></span></a></p>
+                     </div>
+                  </div>
+               </div>
+               <!--Become Partner Section-->
+               <div class="col-md-4 col-lg-4 col-sm-12 col-xs-12 ">
+                  <div class="become-partner">
+                     <h3>Want to become an authorised <br/>Philips Partner </h3>
+                  </div>
+                  <div style="padding: 38px 16px 2px 20px;">
+                     <button class="reg-button"> Register Here</button>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </section>
+      <!--login section End-->
+      <!--bootom nam bar -->
+      <section class="bottom-nav-background">
+         <div class="container">
+            <div class="row bottom-nav">
+               <div class="col-md-4 col-sm-4 col-xs-4"><a href="#">Brochures</a></div>
+               <div class="col-md-4 col-sm-4 col-xs-4 border-left border-right"><a href="#">Spec Sheets</a></div>
+               <div class="col-md-4 col-sm-4 col-xs-4"><a href="#">Videos</a></div>
+            </div>
+         </div>
+      </section>
+      </apex:form>
+      <!--bootom nam bar close-->
+      <!--Footer section -->
+      <section>
+         <c:portal_footer />
+      </section>
+      <!-- Floating Social Media bar Starts -->
+      <div class="float-sm">
+         <div class="fl-fl float-fb">
+            <i class="fa fa-facebook"></i>
+            <a href="#" target="_blank"> Like us!</a>
+         </div>
+         <div class="fl-fl float-tw">
+            <i class="fa fa-twitter"></i>
+            <a href="#" target="_blank">Follow us!</a>
+         </div>
+         <div class="fl-fl float-gp">
+            <i class="fa fa-youtube"></i>
+            <a href="#" target="_blank">Go to Youtube!</a>
+         </div>
+         <div class="fl-fl float-rs">
+            <i class="fa fa-pinterest"></i>
+            <a href="#" target="_blank">Follow us!</a>
+         </div>
+      </div>
+      <!-- Floating Social Media bar Ends -->
+      <!--login script-->
+        <script>
+      $(document).ready(function () {
+        $('#login-trigger').click(function () {
+            $('#login-content').slideToggle();
+            $(this).toggleClass('active');
+            if ($(this).hasClass('active')){              
+                    $(this).find('span').html('&#x25b2;');
+            }else{
+               $(this).find('span').html('▼'); 
+            }
+            $('#signup-content').slideUp();
+        })
+        
+        $('#signup-trigger').click(function () {
+            $('#login-content').slideUp();
+             $(this).toggleClass('active');
+             if ($(this).hasClass('active')){              
+                    $(this).find('span').html('&#x25b2;');
+            }else{
+               $(this).find('span').html('▼'); 
+            }
+            
+            $('#signup-content').slideToggle();
+        });
+    });
+    </script>
+      
+   </body>
+   <!--body section close -->
+   <!-- End Default Content REMOVE THIS -->
+</apex:page>
+*******************************************************APEX CLASS**************************************************
+public class IndexHomeCntrl {
+
+  public string username{get;set;}
+  public string password{get;set;}
+  public string customerusername{get;set;}
+  public string customerpassword{get;set;}
+  public List<Contact> con;
+  public List<Contact> conCustomer;
+  
+  
+    Id DealerShowId = Schema.SObjectType.Contact.RecordTypeInfosByName.get('Dealer').RecordTypeId;
+    Id DistributorShowId = Schema.SObjectType.Contact.RecordTypeInfosByName.get('Distributor').RecordTypeId;
+    Id RetailerShowId = Schema.SObjectType.Contact.RecordTypeInfosByName.get('Retailer').RecordTypeId;
+    Id SubDealerShowId = Schema.SObjectType.Contact.RecordTypeInfosByName.get('Sub Dealer').RecordTypeId;
+    Id ReSellerShowId = Schema.SObjectType.Contact.RecordTypeInfosByName.get('ReSeller').RecordTypeId;
+    Id CustomerShowId = Schema.SObjectType.Contact.RecordTypeInfosByName.get('Customer').RecordTypeId;
+
+
+  
+    //this function check the existing contact username and password for the "Partner" from the database if validate then it will redirect to its Profile page
+    public PageReference doSignIn(){
+    
+  if(string.isBlank(username) || (string.isBlank(password))){
+           ApexPages.addmessage(new ApexPages.message(ApexPages.severity.WARNING,'Email And Password is Required'));
+           return null;
+      }
+      else{
+        con = [select id,password__c,User_Name__c,RecordTypeId,Random_Password__c from contact where User_Name__c=:username and password__c=:password limit 1];
+        system.debug('===con==='+con);
+        
+        
+
+        if(con.size()<=0){
+        
+           ApexPages.addmessage(new ApexPages.message(ApexPages.severity.WARNING,'Invalid  username and password please check!'));
+           return null;
+
+        }
+        
+        else{
+        Id recordid = con[0].RecordTypeid;
+        
+            if(recordid == DealerShowId && (username!='' && password!='' && (con.size()>0))){
+             system.debug('DealerShowId==='+DealerShowId );
+               PageReference pageRef = new PageReference('/apex/DistributorProfile?id='+con[0].id);
+                pageRef.setRedirect(true);
+                return pageRef;
+            }
+            
+            else if(recordid == DistributorShowId && (username!='' && password!='' && (con.size()>0))){
+                         system.debug('DistributorShowId ==='+DistributorShowId );
+
+              PageReference pageRef = new PageReference('/apex/DistributorProfile?id='+con[0].id);
+                pageRef.setRedirect(true);
+                return pageRef;
+            
+            }
+            
+            else if(recordid == RetailerShowId && (username!='' && password!='' && (con.size()>0))){
+                         system.debug('RetailerShowId ==='+RetailerShowId );
+
+             PageReference pageRef = new PageReference('/apex/DistributorProfile?id='+con[0].id);
+                pageRef.setRedirect(true);
+                return pageRef;
+            
+            
+            }
+            
+            else if(recordid == SubDealerShowId && (username!='' && password!='' && (con.size()>0))){
+                         system.debug('SubDealerShowId ==='+SubDealerShowId );
+
+            PageReference pageRef = new PageReference('/apex/DistributorProfile?id='+con[0].id);
+                pageRef.setRedirect(true);
+                return pageRef;
+                       
+            }
+            
+            else if(recordid == ReSellerShowId && (username!='' && password!='' && (con.size()>0))){
+                         system.debug('ReSellerShowId ==='+ReSellerShowId );
+
+                 PageReference pageRef = new PageReference('/apex/DistributorProfile?id='+con[0].id);
+                pageRef.setRedirect(true);
+                return pageRef;
+            
+            }
+            
+             }
+              
+      
+      }
+    
+   
+    
+     return null;
+    }
+    
+    
+    
+    public PageReference customerLogIn(){
+    
+     if(string.isBlank(customerusername) || (string.isBlank(customerpassword))){
+           ApexPages.addmessage(new ApexPages.message(ApexPages.severity.WARNING,'Email And Password is Required'));
+           return null;
+      }
+      
+      else{
+       conCustomer = [select id,password__c,User_Name__c,RecordTypeId,Random_Password__c from contact where User_Name__c=:customerusername and password__c=:customerpassword limit 1];
+        system.debug('===conCustomer==='+conCustomer );
+        
+        
+         if(conCustomer.size()<=0){
+        
+           ApexPages.addmessage(new ApexPages.message(ApexPages.severity.WARNING,'Invalid  username and password please check!'));
+           return null;
+
+        }
+        else{
+        
+         Id recordidCustomer = conCustomer[0].RecordTypeid;
+         
+            if(recordidCustomer == CustomerShowId && (customerusername!='' && customerpassword!='' && (conCustomer.size()>0))){
+             system.debug('CustomerShowId ==='+CustomerShowId);
+               PageReference pageRef = new PageReference('/apex/CustomerProfile?id='+conCustomer[0].id);
+                pageRef.setRedirect(true);
+                return pageRef;
+            }
+        
+        }
+        
+        
+      
+      }
+    
+    
+    return null;
+    }
+  
+}
