@@ -1,0 +1,519 @@
+<apex:page controller="OpportunityDummy_clone_asger"  standardStylesheets="false"  showHeader="false" sidebar="false" docType="html-5.0">   
+<c:head_include ></c:head_include>
+<c:portal_Script ></c:portal_Script>
+
+   <style>
+      .form-control{
+      height:34px !important;
+      padding: 0 15px !important;
+      font-size: 14px !important;
+      }
+      .btn-padding{
+      margin:8px;
+      }
+      .right{
+      text-align:right;
+      }
+      .custom-footer ul li{
+            padding: 6px 6px 0px 5px;
+      }
+   </style>
+   <!--Body Start Here-->
+   <body>
+   <!--navbar menu-->
+      <section>
+         <c:DealerSideMenu ></c:DealerSideMenu>
+      </section>
+      <div id="main">
+    
+         <div style="width:90%; margin:0 auto;">
+           <apex:form > <div class="row">
+               <div class="title-grid">
+                  <h3>Opportunity</h3>
+                  <p class="forgotten" style="text-align:right;">
+                       <!--<a class="url-cursor"><span style="margin-right:5px;"><i class="fa fa-plus-circle" aria-hidden="true"></i></span> View DOA Requests </a> -->
+                       <apex:commandLink action="{!RedirectDetailOpp}"><span style="margin-right:5px;"><i class="fa fa-file-text-o"></i></span> View Opportunities </apex:commandLink>
+                    </p>
+               </div>
+            </div></apex:form>
+            <div class="row" id="case-title">
+               <apex:form id="ni">   
+                  <div class="panel panel-default">
+                     <div class="panel-body">
+                        <h5>Account Details</h5>
+                        <div class="row">
+                           <!--Account Section Start Here -->
+                         
+                         <div class="form-row">
+                              <div class="form-group col-md-4">
+                                 <label for="AccountName">Account Name</label>
+                                  <apex:input type="text" value="{!accountname}" styleclass="form-control" html-placeholder="Account Name"  />                                                      
+                              </div>
+                             
+                              <div class="form-group col-md-4">
+                                 <label for="Currency">Currency</label>                                             
+                                   <apex:selectList value="{!Currencies}" size="1" multiselect="false" styleClass="form-control apex-height" id="currCode">
+                                      <apex:selectOptions value="{!CurrencyList}">
+                                      </apex:selectOptions>
+                                   </apex:selectList>
+                              </div>
+                             
+                           </div>
+                         
+
+                         <div class="form-row">                                            
+                              <div class="form-group col-md-4">
+                                 <label for="CloseDate">Close Date</label>                                 
+                                <apex:input type="date" value="{!accountDate}" styleclass="form-control"/>  
+                              </div>
+                        </div>
+                          
+                          <div class="form-row">
+                              <div class="form-group col-md-3">
+                                 <label for="Stage">Stage</label>
+                              <apex:selectList value="{!Stages}" size="1" multiselect="false" styleClass="form-control apex-height" id="stagenm">
+                                  <apex:selectOptions value="{!StageList}">
+                                  </apex:selectOptions>
+                              </apex:selectList>
+                              </div>
+                              <div class="form-group col-md-3">
+                                 <label for="Probability">Probability (%)</label>
+                                <apex:input type="text"   id="Probability" value="{!opportunityprobabilty}" styleclass="form-control" html-placeholder="Probability" /> 
+                              </div>
+                              <div class="form-group col-md-3">
+                                 <label for="Amount">Amount</label>
+                                  <apex:input type="text"   id="Amount" value="{!opportunityamount}" styleclass="form-control" html-placeholder="Amount"  />
+                              </div>
+                       
+                     </div>      
+                           <div class="form-row">
+                              
+                              <div class="form-group col-md-3">
+                                 <label for="Type">Type</label>
+                                  <apex:selectList value="{!Type}" size="1" multiselect="false" styleClass="form-control apex-height" id="type1">
+                                      <apex:selectOptions value="{!TypeList}">
+                                      </apex:selectOptions>
+                                  </apex:selectList>
+                  
+                           
+                              </div>
+                           </div>
+                        </div>
+
+
+                     
+                     <!--Product Add Table Start -->
+                      <div class="form-group">
+                        <h5>Add Product List:</h5>
+                       <div class="col-sm-12"> 
+                        
+                       <script>
+                           function changedpicklistlist(k){
+                               document.getElementById('{!$Component.wrInId}').value=k;
+                               changedlist();
+                           }
+                           function changequantity(k,quant){
+                               
+                              // alert('k=='+k);
+                               try{
+                               document.getElementById('{!$Component.wrInId}').value=k;
+                               document.getElementById('{!$Component.quant2}').value=quant;
+                               }catch(e){
+                                   alert(e);
+                               }
+                           }
+                       </script>
+                               <apex:outputPanel id="ProdTabId">
+                              <table class="table table-bordered case-summary-table" id="ProductAddTable" >
+                                 <tbody>
+                                <apex:variable var="count" value="{!0}"   />    
+                                 <apex:repeat value="{!allProductList}" var="apList" id="TABLIST">
+                                 
+                                    <tr id="tr1">
+                                        <td class="col-md-1">
+                                        <apex:inputCheckbox id="myCheck"  style="margin: 11px 0px 0px 15px;"><apex:actionSupport reRender="none" event="onclick" action="{!checkFunction}"><apex:param name="checkboxcheck" value="{!count}"/></apex:actionSupport></apex:inputCheckbox>
+                                        </td>
+                                        <td class="col-md-4" id="tdx1">
+                                           <apex:selectList value="{!apList.selectedproductFamily}" size="1" multiselect="false" styleClass="form-control" id="hav7"  >
+                                                <apex:selectOptions value="{!apList.productFamily}"  >
+                                                </apex:selectOptions>
+                                                <apex:actionSupport event="onchange" action="{!WrapProductlist}" reRender="i12"><apex:param name="windex" value="{!count}" assignTo="{!wrapIndex}"/>
+                                                </apex:actionSupport>
+                                            </apex:selectList>                                       
+                                            
+                                        </td>
+                                        <td class="col-md-4 tdxxx" id="td1">
+                                            <apex:outputPanel id="i12">
+                                         <apex:selectList value="{!apList.selectedProd}" size="1" multiselect="false" styleClass="form-control"><apex:selectOptions id="oppid" value="{!apList.product}"  /></apex:selectList>
+                                        </apex:outputPanel>
+                                            
+                                        </td>
+                                        <td class="col-md-3" id="qty1">
+                                           <apex:input type="text" styleClass="form-control" value="{!apList.productInfoquantity}" html-placeholder="Qty."/>                                          
+                                        </td>
+                                    </tr>
+                                      <apex:variable value="{!count+1}" var="count"/>
+                                   </apex:repeat>
+                                 </tbody>
+                            </table>
+                            </apex:outputPanel>
+                        </div>
+                        <div class="row" style="text-align:right; margin-right: 15px;"> 
+                            <apex:outputPanel ><span  class="cursor"><i class="fa fa-plus-circle" style="font-size:25px;color:#0565cc;" title="Add Product"></i> </span><apex:actionSupport event="onclick" action="{!addproductrow}" reRender="ProdTabId"/></apex:outputPanel>
+                            <apex:outputPanel ><span  class="cursor"><i class="fa fa-times-circle" style="font-size:25px;color:#d81712;" title="Delete Product"></i></span><apex:actionSupport event="onclick" action="{!DelProductRow}" reRender="ProdTabId"/></apex:outputPanel>
+                        </div>
+                       
+                        
+                    </div>  
+                                   
+                                   
+                      <!--Product Add Table End --> 
+                        
+                        
+                        
+                        
+                        
+                        <h5>Contact Details</h5>
+                        <div class="row">
+                           <div class="form-row">
+                              <div class="form-group col-md-3">
+                                 <label for="ContactPerson">Contact Person</label>
+                                  <apex:input type="text"   id="ContactPerson" styleclass="form-control" value="{!contactname}" html-placeholder="Contact Person" />  
+                              </div>
+                              <div class="form-group col-md-3">
+                                 <label for="Email">Email</label>
+                            <apex:input type="text"   id="Email" value="{!contactemail}" styleclass="form-control" html-placeholder="Email"  />                    
+                              </div>
+                              <div class="form-group col-md-3">
+                                 <label for="PhoneNumber">Phone Number</label>
+                             <apex:input type="text"   id="PhoneNumber" styleclass="form-control" value="{!contactphone}" html-placeholder="Phone Number" />    
+                              </div>
+                              <div class="form-group col-md-3">
+                                 <label for="MobileNumber">Mobile  Number</label>
+                                 <apex:input type="text"   id="MobileNumber" styleclass="form-control"  value="{!contactmobile}" html-placeholder="Mobile Number" />                                  
+                           </div>
+                           <div class="form-row"> 
+                                <div class="form-group col-md-6">
+                                 <label for="Street">Street</label>
+                                <apex:input type="text"   id="Street" styleclass="form-control" value="{!contactstreet}" html-placeholder="Street" />   
+
+                              </div>
+                              <div class="form-group col-md-3">
+                                 <label for="City">City</label>
+                         <apex:input type="text" id="City" styleclass="form-control" value="{!contactcity}"  html-placeholder="City"/>  
+                              </div>
+                              <div class="form-group col-md-3">
+                                 <label for="StateProvince">State/Province</label>
+                                     <apex:input type="text" id="StateProvince" styleclass="form-control" value="{!contactstate}" html-placeholder="State/Province" />  
+
+                              </div>
+                              <div class="form-group col-md-3">
+                                 <label for="Country">Country</label>
+                             <apex:input type="text" id="Country" styleclass="form-control" value="{!contactcountry}" html-placeholder="Country"/>
+
+                              </div>
+                              <div class="form-group col-md-3">
+                                 <label for="ZipPostalCode">Zip/Postal Code</label>
+                                    <apex:input type="text" id="ZipPostalCode" styleclass="form-control" value="{!contactpostalcode}" html-placeholder="Zip/Postal Code"  />
+
+                              </div>
+                              
+                           </div>
+                           
+                           
+                           
+                           <div class="form-row"> 
+                                <div class="form-group col-md-12">
+                                 <label for="Description">Description  </label>
+                               <apex:input type="text" id="Description" styleclass="form-control" value="{!contactdescription}"/>
+     
+                              </div>
+                           </div>
+                        </div>
+                       
+                     </div>
+                      <div class="panel-footer right">
+                    
+                    
+                       <apex:commandButton value="Save" action="{!doSaveAndNew}" styleClass="action-button btn-info btn-padding" />    
+                        </div>
+                     
+                  </div>
+                  
+   
+                  
+                
+            </div>
+              
+                  
+              </apex:form>   
+               
+           
+         </div>
+     </div>   
+      
+     </div> 
+  
+      
+      
+    <section>
+         <c:portal_footer />
+      </section>
+      
+   </body>
+ 
+</apex:page>
+*******************************************************Apex Controller***********************************************
+public class OpportunityDummy_clone_asger 
+{
+  public string accountname{get;set;}
+  public string accountdescription{get;set;}
+  public string contactname{get;set;}
+  public string contactemail{get;set;}
+  public string contactphone{get;set;}
+  public string contactmobile{get;set;}
+  public string contactstreet{get;set;}
+  public string contactcity{get;set;}
+  public string contactstate{get;set;}
+  public string contactcountry{get;set;}
+  public string contactpostalcode{get;set;}
+  public string contactdescription{get;set;}
+  public string opportunityexpectedrevenue{get;set;}
+  public integer opportunityprobabilty{get;set;}
+  public integer opportunityamount{get;set;}
+  public Date accountDate{get;set;}
+  public list<selectOption> StageList {get;set;}
+  public string Stages{get;set;}
+  public list<selectOption> TypeList {get;set;}
+  public string Type{get;set;}
+  public list<selectOption> CurrencyList {get;set;}
+  public string Currencies{get;set;}
+  
+    //variable declaration for Prouct Info added by krrish-25-10-2018
+  public list<selectOption> selectProductList {get;set;}
+  public string selectProduct{get;set;}
+  public list<selectOption> selectProdList {get;set;}
+  public string selectedProd{get;set;}
+  public list<selectOption> ProductFamilyList {get;set;}
+  public string ProductFamily{get;set;}
+  public Integer wrapIndex{get;set;}
+  public list<allProducts> allProductList{get;set;}
+  public Integer wquant2{get;set;}
+  
+  
+  //creating set for checkbox
+  
+  public Set<Integer> selectcheckbox;
+ 
+   
+public OpportunityDummy_clone_asger()
+ {               
+                  
+                  selectcheckbox = new Set<Integer>();
+                  
+                  
+                StageList = new List<selectOption>();
+                Schema.DescribeFieldResult fieldResult2 = opportunity.StageName.getDescribe();
+                List<Schema.PicklistEntry> cou29 = fieldResult2.getPicklistValues();
+                for( Schema.PicklistEntry f : cou29)
+                {
+                  StageList.add(new SelectOption(f.getLabel(), f.getValue()));
+                }    
+
+                TypeList = new List<selectOption>();
+                Schema.DescribeFieldResult fieldResult3 = opportunity.Type.getDescribe();
+                List<Schema.PicklistEntry> cou3 = fieldResult3.getPicklistValues();
+                for( Schema.PicklistEntry f : cou3)
+                {
+                  TypeList.add(new SelectOption(f.getLabel(), f.getValue()));
+                } 
+                
+                CurrencyList = new List<selectOption>();
+                Schema.DescribeFieldResult fieldResult1 = account.CurrencyIsoCode.getDescribe();
+                List<Schema.PicklistEntry> cou1 = fieldResult1.getPicklistValues();
+                for( Schema.PicklistEntry f : cou1)
+                {
+                 // CurrencyList.add(new SelectOption(f.getLabel(), f.getValue()));
+                  CurrencyList.add(new SelectOption(f.getValue(),f.getLabel()));
+
+                }
+                
+                
+                //Added by krrish on 25-10-2018
+                 allProductList=new list<allProducts>();
+                 addproductrow();
+                   
+               
+                                  
+ }
+     Public PageReference  doSaveAndNew()
+     {
+     string conid=apexpages.currentpage().getparameters().get('id');
+     account acc = new account();
+     acc.Name = accountname;
+     acc.CurrencyIsoCode = Currencies;
+     acc.Description = contactdescription;
+     system.debug('asger'+acc.Name);
+     insert acc;
+     
+     contact con = new contact ();
+     con.AccountId = acc.Id;
+     con.LastName = contactname;
+     con.Email = contactemail;
+     con.Phone = contactphone;
+     con.MobilePhone = contactmobile;
+     con.MailingStreet = contactstreet;
+     con.MailingCity = contactcity;
+     con.MailingState = contactstate;
+     con.MailingCountry = contactcountry;
+     con.MailingPostalCode = contactpostalcode;
+     //con.Description = contactdescription;
+     insert con;
+     
+     opportunity opp = new opportunity();
+     opp.Name = accountname;
+     opp.CloseDate = accountDate;
+     opp.AccountId = acc.id;
+     opp.StageName =Stages;
+     opp.Probability = opportunityprobabilty;
+     opp.Amount = opportunityamount;
+     opp.Type = Type;
+     opp.Contact__c=conid;
+     opp.CurrencyIsoCode = Currencies;
+     insert opp;
+     
+     pricebook2 pb = [select Id from pricebook2 where IsStandard = TRUE][0];
+     Id pricebookId = pb.Id;
+     
+  
+     Map<PricebookEntry,Integer> map1 =new Map<PricebookEntry,Integer>();
+     List<OpportunityLineItem> oli = new List<OpportunityLineItem>();
+     
+       for(allProducts allp : allProductList){
+       
+         for(Product2 p2 : [select id ,Name,Family,Active__c from Product2 where Name =:allp.selectedProd]){
+         
+         system.debug('p2*****'+p2.id);
+             for(PricebookEntry pb1:[Select id, Product2Id,Pricebook2Id ,UnitPrice from PricebookEntry where Pricebook2Id =:pricebookId and Product2Id=:p2.id and CurrencyIsoCode =: opp.CurrencyIsoCode] )
+         {
+            map1.put(pb1,Integer.valueof(allp.productInfoquantity));
+         }
+         
+          } 
+         
+        }   
+      
+          for(PricebookEntry ppe : map1.keyset()){
+          
+          OpportunityLineItem oppli = new OpportunityLineItem();
+          oppli.OpportunityId = opp.id;
+          oppli.PricebookEntryId = ppe.id;
+          oppli.Quantity = map1.get(ppe);
+          oppli.TotalPrice=ppe.UnitPrice*oppli.Quantity;
+          oli.add(oppli);
+          
+          }
+          
+          if(oli.size()>0){
+           insert oli;
+          
+          }
+     
+     PageReference reRend = new PageReference('/apex/MyOpportunityDummy?id='+conid);
+        reRend.setRedirect(true);
+        return reRend;
+      
+     }
+     
+      public list<SelectOption> ProdFamilyList(){
+        ProductFamilyList = new List<selectOption>();
+        ProductFamilyList.add(new SelectOption('', 'Please Select'));
+        Schema.DescribeFieldResult fieldResult3111 = Product2.Family.getDescribe();
+        List<Schema.PicklistEntry> cou3111 = fieldResult3111.getPicklistValues();
+        for( Schema.PicklistEntry f : cou3111){
+          ProductFamilyList.add(new SelectOption(f.getLabel(), f.getValue()));
+        } 
+        return ProductFamilyList;
+     }  
+     
+     
+      //Use of Wrapper class added by krrish-25-10-2018
+  public class allProducts {
+  public list<selectOption> productFamily{get;set;}
+  public list<selectOption> product{get;set;}
+  public Integer quantity{get;set;}
+  public String selectedproductFamily{get;set;}
+  public String selectedProd{get;set;}
+  public integer WrapperIndex{get;set;}
+  public string productInfoquantity{get;set;}
+  public Boolean checkvalue{get;set;}
+
+
+}
+   // ProductInfo functionality start added by krrish 25-10-2018
+   public void WrapProductlist(){
+         string pp=apexpages.currentpage().getparameters().get('windex');
+         system.debug('wrapIndex======'+wrapIndex);
+         allProductList[wrapIndex].product=getListProduct();
+     }
+     
+       public void Wrapuantity(){
+      
+         system.debug('1=='+allProductList[wrapIndex].quantity);
+        allProductList[wrapIndex].quantity=wquant2;
+        
+        system.debug('2=='+allProductList[wrapIndex].quantity);
+     }
+   
+     
+      Public list<SelectOption> getListProduct(){  
+        selectProductList= new List<selectOption>();
+        if(allProductList[wrapIndex].selectedproductFamily!=''){
+             system.debug('productstrin family'+allProductList[wrapIndex].selectedproductFamily);
+             for(Product2 p2 : [select id ,Name,Family,Active__c,CurrencyIsoCode from Product2 where Family =:allProductList[wrapIndex].selectedproductFamily and Active__c != False ])
+             {
+                  selectProductList.add(new SelectOption(p2.name, p2.name));
+             }
+         }
+         return selectProductList;
+     }
+
+       public void DelProductRow(){
+                       Integer k = allProductList.size();                      
+                      for(Integer i=k-1;i>0;i--){
+                      if(selectcheckbox.contains(i)){
+                       allProductList.remove(i);
+                       selectcheckbox.remove(i);
+                      }
+                      
+
+                      }
+                       system.debug('===selectcheckbox=='+selectcheckbox);  
+                      system.debug('===allProductList=='+allProductList);    
+
+    }
+
+  public void addproductrow()
+{
+   allProducts ap= new allProducts(); 
+   ap.productFamily=ProdFamilyList();  
+   allProductList.add(ap); 
+    }
+     
+      // ProductInfo functionality end added by krrish 25-10-2018
+     
+     // this function add the checkbox which is checked into the set added by krrish 30-10-2018
+     public void checkFunction(){
+     
+      string pp=apexpages.currentpage().getparameters().get('checkboxcheck');
+      selectcheckbox.add( Integer.valueof(pp));
+        system.debug('===selectcheckbox=='+selectcheckbox);      
+     }
+     
+      public PageReference RedirectDetailOpp(){
+        string idd=ApexPages.currentPage().getParameters().get('id');
+        PageReference pr=new PageReference('/apex/MyOpportunityDummy?id='+idd);
+        pr.setRedirect(True);
+        return pr;
+    }
+}
