@@ -1,0 +1,237 @@
+<apex:page standardStylesheets="false" showHeader="false" sidebar="false" docType="html-5.0" controller="subuserCntrl">
+<apex:form html-novalidate="novalidate" >
+   <head>
+      <script src='//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js'></script> 
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6/jquery.min.js" type="text/javascript"></script>
+      <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js" type="text/javascript"></script>
+      <link href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8/themes/base/jquery-ui.css" rel="Stylesheet" type="text/css" />
+   </head>
+   <c:head_include ></c:head_include>
+    <c:portal_Script ></c:portal_Script>
+   <style>
+      .download-center{
+      background-image: url('{!URLFOR($Resource.img, '/img/backgrounds/profile-banner.jpg')}');
+      height:200px; 
+      min-height:250px; 
+      width:100%; 
+      margin:0; 
+      padding:0;     
+      background-size: cover;
+      }
+      .user-name{
+      width: 120px;
+      min-width: 120px;
+      background: none;
+      border: none;
+      }
+      input[type="text"], input[type="password"], textarea, textarea.form-control{
+         height: 34px;
+          margin: 0;
+    padding: 0 15px;
+    vertical-align: middle;
+    background: #ffffff5e;
+    border: 1px solid #ddd;
+   /* font-family: "Lato", "Helvetica Neue", arial, helvetica, sans-serif; */
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 50px;
+    color: #888;
+    -moz-border-radius: 4px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    -o-transition: all .3s;
+    -moz-transition: all .3s;
+    -webkit-transition: all .3s;
+    -ms-transition: all .3s;
+    transition: all .3s;
+      }
+      .apex-button{
+        height: 28px; 
+        width: 130px;  
+        margin: 0;  
+        padding: 5px 0px;
+        vertical-align: middle;  
+        border: 0;  
+        font-size: 13px;  
+        font-weight: 400;  
+        line-height: 18px;  
+        float: left; 
+        margin: 0px 10px 0px 0px;
+        text-align:center;
+        border-radius:3px;
+      }
+   </style>
+   <body>
+      <script>
+         $(window).scroll(function() {
+             if($(this).scrollTop()>5) {
+                 $( ".navbar-me" ).addClass("fixed-me");
+             } else {
+                 $( ".navbar-me" ).removeClass("fixed-me");
+             }
+         });
+      </script>
+      <!--navbar menu-->
+      <section>
+         <c:DealerSideMenu ></c:DealerSideMenu>
+      </section>
+      <div id="main">
+         <div style="width:90%; margin:0 auto;">
+            <div class="row" style="min-height:350px;">
+            <div class="title-grid">
+                    <h3>Add Sub Users</h3>
+                </div>
+               <div class="col-md-12 col-sm-12">
+                  
+                           <apex:outputPanel id="ProdTabId">
+                              <table class="table table-bordered case-summary-table" id="ProductAddTable" >
+                                 <tbody>
+                                <apex:variable var="count" value="{!0}"/>    
+                                 <apex:repeat value="{!conlist}" var="apList" id="TABLIST">
+                                 
+                                    <tr id="tr1">
+                                       <td>
+                                        <apex:inputCheckbox id="myCheck"  style="margin: 11px 0px 0px 15px;"><apex:actionSupport reRender="none" event="onclick" action="{!checkFunction}"><apex:param name="checkboxcheck" value="{!count}"/></apex:actionSupport></apex:inputCheckbox>
+                                        </td>
+                                        <td>
+                                        <apex:inputfield value="{!apList.firstname}" styleClass="form-control" html-placeholder="First Name"/>
+                                        </td>
+                                        <td>
+                                         <apex:inputfield value="{!apList.lastname}" styleClass="form-control" html-placeholder="Last Name" required="false"/>
+                                        </td>
+                                        <td>
+                                        <apex:inputfield value="{!apList.Email}" styleClass="form-control"  html-placeholder="Email"/>
+                                        </td>
+                                        <td>
+                                           <apex:inputfield value="{!apList.Phone}"  styleClass="form-control" html-placeholder="Landline No."/>                                          
+                                        </td>
+                                         <td>
+                                           <apex:inputfield value="{!apList.MobilePhone}"  styleClass="form-control" html-placeholder="Mobile No."/>                                          
+                                        </td>
+                                         <td>
+                                           <apex:inputfield value="{!apList.MailingCity}" styleClass="form-control" html-placeholder="City"/>                                          
+                                        </td>
+                                         <td>
+                                           <apex:inputfield value="{!apList.MailingCountry}"  styleClass="form-control" html-placeholder="Country"/>                                          
+                                        </td>
+                                    </tr>
+                                     <apex:variable value="{!count+1}" var="count"/>
+                                   </apex:repeat>
+                                 </tbody>
+                            </table>
+                  </apex:outputPanel>
+                  
+                  <!--custom action button added by suman -->
+                        
+                            
+                                <apex:outputPanel ><div class="apex-button btn-info apex-button"><i class="fa fa fa-plus" aria-hidden="true" style="margin-right:5px;"></i>Add More </div><apex:actionSupport event="onclick" action="{!addproductrow}" reRender="ProdTabId"/></apex:outputPanel>
+                            
+                            
+                                <apex:outputPanel ><div class="apex-button btn-danger apex-button"><i class="fa fa-trash" aria-hidden="true" style="margin-right:5px;"></i>Delete</div><apex:actionSupport event="onclick" action="{!DelProductRow}" reRender="ProdTabId"/></apex:outputPanel>
+                            
+                            
+                            
+                                <apex:commandButton value="Save" action="{!doSave}" styleClass="action-button btn-primary" style="margin: 0px 10px 0px 0px; width:130px;" />
+                            
+                                <apex:commandButton value="View All Users" action="{!doViewallUser}" styleClass="action-button btn-success" style="margin: 0px 10px 0px 0px; width:130px;" />
+                        
+                    
+              
+               </div>
+            </div>
+         </div>
+      </div>
+      <a id="back2Top" href="#" title="Go to Top">&#10148;</a>
+      <!--#############################FOOTER SECTION################################--->
+      <section>
+        <c:portal_footer />
+      </section>
+      <!--#############################################################--->
+      <!-- end of navbar-->
+    
+   </body>
+   </apex:form>
+</apex:page>
+************************************************************Apex Controller*************************************************
+public class subuserCntrl {
+
+ public List<contact> conlist{get;set;}
+ public Set<Integer> selectcheckbox;
+ public Contact cono;
+ Id subDealerId;
+ 
+ public subuserCntrl(){
+   
+   string currentid = apexpages.currentpage().getparameters().get('id'); 
+   
+    cono=[Select id,Name,Accountid from contact where id=:currentid limit 1];
+   
+   subDealerId = Schema.SObjectType.Contact.RecordTypeInfosByName.get('Sub Dealer').RecordTypeId;
+   selectcheckbox = new Set<Integer>();
+      
+     conlist=new List<contact>();
+     contact con=new contact();
+     con.RecordTypeId = subDealerId;
+     con.Accountid = cono.Accountid;
+     con.Inactive__c = true;
+     conlist.add(con);
+ }
+
+    public void addproductrow(){
+    
+    contact cc=new contact();
+    cc.RecordTypeId = subDealerId ;
+    cc.Accountid =  cono.Accountid;
+    cc.Inactive__c = true;
+    conlist.add(cc);
+    
+    }
+    
+    
+    public void checkFunction(){
+   
+      string pp=apexpages.currentpage().getparameters().get('checkboxcheck');
+      selectcheckbox.add( Integer.valueof(pp));
+       }
+    
+      public void DelProductRow(){
+           Integer k = conlist.size();  
+                               
+          for(Integer i=k-1;i>0;i--){
+          if(selectcheckbox.contains(i)){
+           conlist.remove(i);
+           selectcheckbox.remove(i);
+                  }
+          }
+          
+    }
+    
+    public PageReference doSave(){
+     
+     if(conlist.size()>0){
+      insert conlist;
+     }
+     
+     string currentuserid = apexpages.currentpage().getparameters().get('id'); 
+     PageReference pr = new PageReference('/apex/DistributorSubUserList?id='+currentuserid);
+     pr.setRedirect(true); 
+     return pr;
+      
+    
+    }
+    
+    
+    public PageReference doViewallUser(){
+    
+     string currentuserid = apexpages.currentpage().getparameters().get('id'); 
+     PageReference pr = new PageReference('/apex/DistributorSubUserList?id='+currentuserid);
+     pr.setRedirect(true);
+     return pr;
+
+    
+    }
+    
+}
