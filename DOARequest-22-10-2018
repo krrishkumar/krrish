@@ -1,0 +1,461 @@
+/*
+        Author: Krrish
+        Created Date: 22/10/2018
+        Created For: This apex class is implemented for Insert the records of Customer Details,Pickup Address and Delivery Address from the portal on the Custom object "DOA".
+*/
+
+public class DOARequestController {
+
+  //variable declaration for customer details
+  public string cfname{get;set;}
+  public string clname{get;set;}
+  public string ccompany{get;set;}
+  public string caddress{get;set;}  
+  public string ccity{get;set;}
+  public string czip{get;set;}
+  public string ccountry{get;set;}
+  public string ctelephone{get;set;}
+  public string cemailaddress{get;set;}
+  public string cmobilephone{get;set;}
+  public string cstreet{get;set;}
+  public string cstate{get;set;}
+  
+  //variable declaration for Pickup Address
+  public string pfname{get;set;}
+  public string plname{get;set;}
+  public string pcompany{get;set;}
+  public string paddress{get;set;}
+  public string pcity{get;set;}
+  public string pzip{get;set;}
+  public string pcountry{get;set;}
+  public string ptelephone{get;set;}
+  public string pemailaddress{get;set;}
+  public string pmobilephone{get;set;}
+  public string pstreet{get;set;}
+  public string pstate{get;set;}
+  
+  //variable declaration for Delivery Address
+  public string dfname{get;set;}
+  public string dlname{get;set;}
+  public string dcompany{get;set;}
+  public string daddress{get;set;}
+  public string dcity{get;set;}
+  public string dzip{get;set;}
+  public string dcountry{get;set;}
+  public string dtelephone{get;set;}
+  public string demailaddress{get;set;}
+  public string dmobilephone{get;set;}
+  public string dstreet{get;set;}
+  public string dstate{get;set;}
+  
+   //variable declaration for Prouct Info
+  public list<selectOption> selectProductList {get;set;}
+  public string selectProduct{get;set;}
+  public list<selectOption> selectProdList {get;set;}
+  public string selectedProd{get;set;}
+  public list<selectOption> ProductFamilyList {get;set;}
+  public string ProductFamily{get;set;}
+  public Integer wrapIndex{get;set;}
+  public list<allProducts> allProductList{get;set;}
+  public Integer wquant2{get;set;}
+  public string description{get;set;}
+  
+//creating set for checkbox 
+  public Set<Integer> selectcheckbox;
+  
+  public PageReference doSave(){
+  string conid=apexpages.currentpage().getparameters().get('id');
+  DOA__c doa = new DOA__c();
+  system.debug('conid'+conid);
+   //Insertion of Customer details
+  doa.Contact_Person_First_Name__c = cfname;
+  doa.Last_Name__c = clname;
+  doa.Contact__c=conid;
+  doa.Company__c = ccompany;
+  doa.Address__c = caddress;
+  doa.city__c = ccity;
+  doa.Zip__c = czip;
+  doa.Country__c = ccountry;
+  doa.Telephone__c = ctelephone;
+  doa.Email_Address__c = cemailaddress;
+  doa.Mobile_Phone__c = cmobilephone;
+  doa.Street__c = cstreet;
+  doa.State_County__c = cstate;
+  
+   //Insertion of Pickup Address
+   doa.Contact_person_First_Namep__c = pfname;
+   doa.Last_Namep__c = plname;
+   doa.Companyp__c = pcompany;
+   doa.Addressp__c= paddress;
+   doa.Cityp__c = pcity;
+   doa.Zipp__c = pzip;
+   doa.Countryp__c = pcountry;
+   doa.Telephonep__c = ptelephone;
+   doa.Email_Addressp__c = pemailaddress;
+   doa.Mobile_Phonep__c = pmobilephone;
+   doa.Streetp__c = pstreet;
+   doa.State_Countyp__c = pstate; 
+   
+   //Insertion of Delivery Address
+   doa.Contact_person_First_Named__c = dfname;
+   doa.Last_Named__c = dlname;
+   doa.Companyd__c = dcompany;
+   doa.Addressd__c = daddress;
+   doa.Cityd__c = dcity;
+   doa.Zipd__c = dzip;
+   doa.Countryd__c = dcountry;
+   doa.Telephoned__c = dtelephone;
+   doa.Email_Addressd__c = demailaddress;
+   doa.Mobile_Phoned__c = dmobilephone;
+   doa.Streetd__c = dstreet;
+   doa.State_Countyd__c = dstate;
+  
+  insert doa;
+  
+  List<DOA_Product__c> doapc = new List<DOA_Product__c>();
+  
+  for(allProducts allp : allProductList){
+             for(Product2 p2 : [select id ,Name,Family,Active__c from Product2 where Name =:allp.selectedProd])
+             {
+            
+    DOA_Product__c dop = new DOA_Product__c();
+    dop.Product_Family__c = allp.selectedproductFamily; 
+    dop.Product__c = p2.id;
+    dop.Date_Time__c = allp.productInfodate1;
+    dop.Description__c = description;
+    dop.DOA__c = doa.id;
+    doapc.add(dop);
+       }
+      
+  }
+  
+  if(doapc.size()>0){
+  
+   insert doapc;
+  }
+  
+  PageReference pr=new PageReference('/apex/MyDOARequest?id='+conid);
+  pr.setRedirect(true);
+  return pr;
+  
+  }
+    
+   public DOARequestController() {  
+      selectcheckbox = new Set<Integer>();  
+     allProductList=new list<allProducts>();
+     
+        
+  addproductrow();
+    }
+    
+     public list<SelectOption> ProdFamilyList(){
+        ProductFamilyList = new List<selectOption>();
+        ProductFamilyList.add(new SelectOption('', 'Please Select'));
+        Schema.DescribeFieldResult fieldResult3111 = Product2.Family.getDescribe();
+        List<Schema.PicklistEntry> cou3111 = fieldResult3111.getPicklistValues();
+        for( Schema.PicklistEntry f : cou3111){
+          ProductFamilyList.add(new SelectOption(f.getLabel(), f.getValue()));
+        } 
+        return ProductFamilyList;
+     }  
+     
+  //Use of Wrapper class
+  public class allProducts {
+  public list<selectOption> productFamily{get;set;}
+  public list<selectOption> product{get;set;}
+  public Integer quantity{get;set;}
+  public String selectedproductFamily{get;set;}
+  public String selectedProd{get;set;}
+  public integer WrapperIndex{get;set;}
+  public DateTime productInfodate1{get;set;}
+
+}
+   public void WrapProductlist(){
+         string pp=apexpages.currentpage().getparameters().get('windex');
+         system.debug('wrapIndex======'+wrapIndex);
+         allProductList[wrapIndex].product=getListProduct();
+     }
+     
+     public void Wrapuantity(){
+         system.debug('1=='+allProductList[wrapIndex].quantity);
+        allProductList[wrapIndex].quantity=wquant2;
+        system.debug('2=='+allProductList[wrapIndex].quantity);
+     }
+     
+     Public list<SelectOption> getListProduct(){  
+        selectProductList= new List<selectOption>();
+        if(allProductList[wrapIndex].selectedproductFamily!=''){
+             system.debug('productstrin family'+allProductList[wrapIndex].selectedproductFamily);
+             for(Product2 p2 : [select id ,Name,Family,Active__c from Product2 where Family =:allProductList[wrapIndex].selectedproductFamily and Active__c != False])
+             {
+                  selectProductList.add(new SelectOption(p2.name, p2.name));
+             }
+         }
+         return selectProductList;
+     }
+
+   public void DelProductRow(){
+          Integer k = allProductList.size();                      
+          for(Integer i=k-1;i>0;i--){
+              if(selectcheckbox.contains(i)){
+               allProductList.remove(i);
+                selectcheckbox.remove(i);
+              }
+          
+
+          }
+        system.debug('===allProductList=='+allProductList);  
+    }
+public void checkFunction(){    
+      string pp=apexpages.currentpage().getparameters().get('checkboxcheck');
+      selectcheckbox.add( Integer.valueof(pp));        
+     }
+  public void addproductrow()
+{
+   allProducts ap= new allProducts(); 
+   ap.productFamily=ProdFamilyList();  
+   allProductList.add(ap); 
+    }
+    
+    public PageReference RedirectDoa(){
+    
+        String idd=ApexPages.currentPage().getParameters().get('id');
+        PageReference pr=new PageReference('/apex/MyDOARequest?id='+idd);
+        pr.setRedirect(True);
+        return pr;
+    
+    }
+   
+
+}
+********************************************************ApexController***********************************************************
+/*
+        Author: Krrish
+        Created Date: 22/10/2018
+        Created For: This apex class is implemented for Insert the records of Customer Details,Pickup Address and Delivery Address from the portal on the Custom object "DOA".
+*/
+
+public class DOARequestController {
+
+  //variable declaration for customer details
+  public string cfname{get;set;}
+  public string clname{get;set;}
+  public string ccompany{get;set;}
+  public string caddress{get;set;}  
+  public string ccity{get;set;}
+  public string czip{get;set;}
+  public string ccountry{get;set;}
+  public string ctelephone{get;set;}
+  public string cemailaddress{get;set;}
+  public string cmobilephone{get;set;}
+  public string cstreet{get;set;}
+  public string cstate{get;set;}
+  
+  //variable declaration for Pickup Address
+  public string pfname{get;set;}
+  public string plname{get;set;}
+  public string pcompany{get;set;}
+  public string paddress{get;set;}
+  public string pcity{get;set;}
+  public string pzip{get;set;}
+  public string pcountry{get;set;}
+  public string ptelephone{get;set;}
+  public string pemailaddress{get;set;}
+  public string pmobilephone{get;set;}
+  public string pstreet{get;set;}
+  public string pstate{get;set;}
+  
+  //variable declaration for Delivery Address
+  public string dfname{get;set;}
+  public string dlname{get;set;}
+  public string dcompany{get;set;}
+  public string daddress{get;set;}
+  public string dcity{get;set;}
+  public string dzip{get;set;}
+  public string dcountry{get;set;}
+  public string dtelephone{get;set;}
+  public string demailaddress{get;set;}
+  public string dmobilephone{get;set;}
+  public string dstreet{get;set;}
+  public string dstate{get;set;}
+  
+   //variable declaration for Prouct Info
+  public list<selectOption> selectProductList {get;set;}
+  public string selectProduct{get;set;}
+  public list<selectOption> selectProdList {get;set;}
+  public string selectedProd{get;set;}
+  public list<selectOption> ProductFamilyList {get;set;}
+  public string ProductFamily{get;set;}
+  public Integer wrapIndex{get;set;}
+  public list<allProducts> allProductList{get;set;}
+  public Integer wquant2{get;set;}
+  public string description{get;set;}
+  
+//creating set for checkbox 
+  public Set<Integer> selectcheckbox;
+  
+  public PageReference doSave(){
+  string conid=apexpages.currentpage().getparameters().get('id');
+  DOA__c doa = new DOA__c();
+  system.debug('conid'+conid);
+   //Insertion of Customer details
+  doa.Contact_Person_First_Name__c = cfname;
+  doa.Last_Name__c = clname;
+  doa.Contact__c=conid;
+  doa.Company__c = ccompany;
+  doa.Address__c = caddress;
+  doa.city__c = ccity;
+  doa.Zip__c = czip;
+  doa.Country__c = ccountry;
+  doa.Telephone__c = ctelephone;
+  doa.Email_Address__c = cemailaddress;
+  doa.Mobile_Phone__c = cmobilephone;
+  doa.Street__c = cstreet;
+  doa.State_County__c = cstate;
+  
+   //Insertion of Pickup Address
+   doa.Contact_person_First_Namep__c = pfname;
+   doa.Last_Namep__c = plname;
+   doa.Companyp__c = pcompany;
+   doa.Addressp__c= paddress;
+   doa.Cityp__c = pcity;
+   doa.Zipp__c = pzip;
+   doa.Countryp__c = pcountry;
+   doa.Telephonep__c = ptelephone;
+   doa.Email_Addressp__c = pemailaddress;
+   doa.Mobile_Phonep__c = pmobilephone;
+   doa.Streetp__c = pstreet;
+   doa.State_Countyp__c = pstate; 
+   
+   //Insertion of Delivery Address
+   doa.Contact_person_First_Named__c = dfname;
+   doa.Last_Named__c = dlname;
+   doa.Companyd__c = dcompany;
+   doa.Addressd__c = daddress;
+   doa.Cityd__c = dcity;
+   doa.Zipd__c = dzip;
+   doa.Countryd__c = dcountry;
+   doa.Telephoned__c = dtelephone;
+   doa.Email_Addressd__c = demailaddress;
+   doa.Mobile_Phoned__c = dmobilephone;
+   doa.Streetd__c = dstreet;
+   doa.State_Countyd__c = dstate;
+  
+  insert doa;
+  
+  List<DOA_Product__c> doapc = new List<DOA_Product__c>();
+  
+  for(allProducts allp : allProductList){
+             for(Product2 p2 : [select id ,Name,Family,Active__c from Product2 where Name =:allp.selectedProd])
+             {
+            
+    DOA_Product__c dop = new DOA_Product__c();
+    dop.Product_Family__c = allp.selectedproductFamily; 
+    dop.Product__c = p2.id;
+    dop.Date_Time__c = allp.productInfodate1;
+    dop.Description__c = description;
+    dop.DOA__c = doa.id;
+    doapc.add(dop);
+       }
+      
+  }
+  
+  if(doapc.size()>0){
+  
+   insert doapc;
+  }
+  
+  PageReference pr=new PageReference('/apex/MyDOARequest?id='+conid);
+  pr.setRedirect(true);
+  return pr;
+  
+  }
+    
+   public DOARequestController() {  
+      selectcheckbox = new Set<Integer>();  
+     allProductList=new list<allProducts>();
+     
+        
+  addproductrow();
+    }
+    
+     public list<SelectOption> ProdFamilyList(){
+        ProductFamilyList = new List<selectOption>();
+        ProductFamilyList.add(new SelectOption('', 'Please Select'));
+        Schema.DescribeFieldResult fieldResult3111 = Product2.Family.getDescribe();
+        List<Schema.PicklistEntry> cou3111 = fieldResult3111.getPicklistValues();
+        for( Schema.PicklistEntry f : cou3111){
+          ProductFamilyList.add(new SelectOption(f.getLabel(), f.getValue()));
+        } 
+        return ProductFamilyList;
+     }  
+     
+  //Use of Wrapper class
+  public class allProducts {
+  public list<selectOption> productFamily{get;set;}
+  public list<selectOption> product{get;set;}
+  public Integer quantity{get;set;}
+  public String selectedproductFamily{get;set;}
+  public String selectedProd{get;set;}
+  public integer WrapperIndex{get;set;}
+  public DateTime productInfodate1{get;set;}
+
+}
+   public void WrapProductlist(){
+         string pp=apexpages.currentpage().getparameters().get('windex');
+         system.debug('wrapIndex======'+wrapIndex);
+         allProductList[wrapIndex].product=getListProduct();
+     }
+     
+     public void Wrapuantity(){
+         system.debug('1=='+allProductList[wrapIndex].quantity);
+        allProductList[wrapIndex].quantity=wquant2;
+        system.debug('2=='+allProductList[wrapIndex].quantity);
+     }
+     
+     Public list<SelectOption> getListProduct(){  
+        selectProductList= new List<selectOption>();
+        if(allProductList[wrapIndex].selectedproductFamily!=''){
+             system.debug('productstrin family'+allProductList[wrapIndex].selectedproductFamily);
+             for(Product2 p2 : [select id ,Name,Family,Active__c from Product2 where Family =:allProductList[wrapIndex].selectedproductFamily and Active__c != False])
+             {
+                  selectProductList.add(new SelectOption(p2.name, p2.name));
+             }
+         }
+         return selectProductList;
+     }
+
+   public void DelProductRow(){
+          Integer k = allProductList.size();                      
+          for(Integer i=k-1;i>0;i--){
+              if(selectcheckbox.contains(i)){
+               allProductList.remove(i);
+                selectcheckbox.remove(i);
+              }
+          
+
+          }
+        system.debug('===allProductList=='+allProductList);  
+    }
+public void checkFunction(){    
+      string pp=apexpages.currentpage().getparameters().get('checkboxcheck');
+      selectcheckbox.add( Integer.valueof(pp));        
+     }
+  public void addproductrow()
+{
+   allProducts ap= new allProducts(); 
+   ap.productFamily=ProdFamilyList();  
+   allProductList.add(ap); 
+    }
+    
+    public PageReference RedirectDoa(){
+    
+        String idd=ApexPages.currentPage().getParameters().get('id');
+        PageReference pr=new PageReference('/apex/MyDOARequest?id='+idd);
+        pr.setRedirect(True);
+        return pr;
+    
+    }
+   
+
+}
