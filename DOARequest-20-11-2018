@@ -1,0 +1,854 @@
+<apex:page standardStylesheets="false" showHeader="false" sidebar="false" docType="html-5.0" controller="DOARequestController">
+   <c:head_include ></c:head_include>
+   <c:portal_Script ></c:portal_Script>
+    <meta name="viewport" content="width=device-width" />
+   <style>
+        @media all and (min-width: 960px) {
+                body{
+                    font-size: 14px;
+                }
+            }
+             
+            @media all and (max-width: 959px) and (min-width: 600px) {
+                body{
+                    font-size: 15px;
+                }
+                .site-logo {
+                padding: 0px 31px !important;
+                margin: 0px 0px;
+                }
+            }
+             
+            @media all and (max-width: 599px) and (min-width: 320px) {
+                body{
+                    font-size: 17px;
+                }
+                .site-logo {
+                padding: 0px 14px !important;
+                margin: 0px 0px;
+                }
+            }
+      .download-center{
+      background-image: url('{!URLFOR($Resource.img, '/img/backgrounds/profile-banner.jpg')}');
+      height:200px; 
+      min-height:250px; 
+      width:100%; 
+      margin:0; 
+      padding:0;     
+      background-size: cover;
+      }
+      .action-button a{
+      line-height:19px !important;
+      }
+      .custom-modal{
+      text-align:center;
+      }
+      /* FILE INPUT */
+      .fileUpload {
+      position: relative;
+      overflow: hidden;
+      margin: 10px;
+      cursor: pointer;
+      }
+      .fileUpload input.upload {
+      position: absolute;
+      top: 0;
+      right: 0;
+      margin: 0;
+      padding: 0;
+      font-size: 20px;
+      cursor: pointer;
+      opacity: 0;
+      filter: alpha(opacity=0);
+      width:50px;
+      }
+      .welcome-user{
+      background: none;
+      border: none;
+      font-size: 14px;
+      }
+      .tab {
+      display: none;
+      }
+      /* Make circles that indicate the steps of the form: */
+      .step {
+      height: 15px;
+      width: 15px;
+      margin: 0 2px;
+      background-color: #bbbbbb;
+      border: none;  
+      border-radius: 50%;
+      display: inline-block;
+      opacity: 0.5;
+      }
+      .step.active {
+      opacity: 1;
+      }
+      /* Mark the steps that are finished and valid: */
+      .step.finish {
+      background-color: #4CAF50;
+      }
+      textarea.form-control{
+      height:auto;
+      min-height:70px;
+      }
+      .form-control{
+      height: 34px!important;
+      padding: 6px 12px !important;
+      font-size:14px !important;
+      }
+      /* The Modal (background) */
+      .modal1 {          
+      position: fixed; /* Stay in place */
+      z-index: 1200; /* Sit on top */
+      padding-top: 40px; /* Location of the box */
+      left: 0px;
+      top: 0;
+      width: 100%; /* Full width */
+      height: 100%; /* Full height */
+      overflow: auto;/* Enable scroll if needed */
+      background-color: rgb(0,0,0); /* Fallback color */
+      background-color: rgba(0,0,0,0.7); /* Black w/ opacity */
+      }
+   </style>
+   <body>
+      <script>
+         $(window).scroll(function() {
+          if($(this).scrollTop()>0) {
+              $( ".navbar-me" ).addClass("fixed-me");
+          } else {
+              $( ".navbar-me" ).removeClass("fixed-me");
+          }
+         });
+      </script>
+      <!--navbar menu-->
+      <section>
+         <c:DealerSideMenu ></c:DealerSideMenu>
+      </section>
+      <div id="main">
+         <apex:form id="doa">
+            <apex:actionFunction name="CallApexMethod" action="{!doSave}"/>
+            <div style="width:90%; margin:0 auto;">
+               <div class="row">
+                  
+                     <div class="title-grid">
+                        <h3>Create DOA Request</h3>
+                        <p class="forgotten" style="text-align:right;">
+                           <!--<a class="url-cursor"><span style="margin-right:5px;"><i class="fa fa-plus-circle" aria-hidden="true"></i></span> View DOA Requests </a> -->
+                           <apex:commandLink action="{!RedirectDoa}"><span style="margin-right:5px;"><i class="fa fa-file-text-o"></i></span> View DOA Requests </apex:commandLink>
+                        </p>
+                     </div>
+                  
+                 
+                     <div class="panel panel-default">
+                        <div class="panel-body" id="case-title">
+                           <!--Customer details-->
+                           <div class="tab" id="CustomerTab">
+                              <h5>Customer Details</h5>
+                              <div class="form-row">
+                                 <div class="form-group col-md-4">
+                                    <label for=""> First Name</label>
+                                    <apex:input type="text" value="{!cfname}" html-placeholder="First Name"   styleClass="form-control"  tabindex="1" />
+                                 </div>
+                                 <div class="form-group col-md-4">
+                                    <label for="">Last Name</label>
+                                    <apex:input type="text" value="{!clname}" html-placeholder="Last Name" styleClass="form-control" tabindex="2" />
+                                 </div>
+                                 <div class="form-group col-md-4">
+                                    <label for="">Company</label>
+                                    <apex:input type="text" value="{!ccompany}" html-placeholder="Company"  styleClass="form-control" tabindex="3" />
+                                 </div>
+                              </div>
+                              <div class="form-row">
+                                 <div class="form-group col-md-3">
+                                    <label for="">Email Address</label>
+                                    <apex:input type="text" value="{!cemailaddress}" html-placeholder="Email Address"  styleClass="form-control" tabindex="4" />
+                                 </div>
+                                 <div class="form-group col-md-3">
+                                    <label for="">Telephone</label>
+                                    <apex:input type="text" value="{!ctelephone}"  html-placeholder="Telephone" styleClass="form-control" tabindex="5" />
+                                 </div>
+                                 <div class="form-group col-md-3">
+                                    <label for="">Mobile Phone</label>
+                                    <apex:input type="text" value="{!cmobilephone}" html-placeholder="Mobile Phone" styleClass="form-control" tabindex="6" />
+                                 </div>
+                                 <div class="form-group col-md-3">
+                                    <label for="">Street</label>
+                                    <apex:input type="text" value="{!cstreet}" html-placeholder="Street" styleClass="form-control" tabindex="7" />
+                                 </div>
+                                 <div class="form-group col-md-3">
+                                    <label for="">City</label>
+                                    <apex:input type="text" value="{!ccity}" html-placeholder="City" styleClass="form-control" tabindex="8" />
+                                 </div>
+                              </div>
+                              <div class="form-row">
+                                 <div class="form-group col-md-3">
+                                    <label for="">State/County</label>
+                                    <apex:input type="text" value="{!cstate}"  html-placeholder="State/County"  styleClass="form-control" tabindex="9" />
+                                 </div>
+                                 <div class="form-group col-md-3">
+                                    <label for="">Country</label>
+                                    <apex:input type="text" value="{!ccountry}" html-placeholder="Country"  styleClass="form-control" tabindex="10" />
+                                 </div>
+                                 <div class="form-group col-md-3">
+                                    <label for="">Zip</label>
+                                    <apex:input type="text" value="{!czip}" html-placeholder="Zip" styleClass="form-control" tabindex="11" />
+                                 </div>
+                              </div>
+                           </div>
+                           <!--Customer details close-->
+                           <!--Pickup Address-->
+                           <div class="tab" id="CustomerTab">
+                              <h5>Pickup Address</h5>
+                              <div class="form-row">
+                                 <div class="form-group col-md-4">
+                                    <label for="">First Name</label>
+                                    <apex:input type="text" value="{!pfname}" html-placeholder="First Name"  styleClass="form-control" tabindex="13" />
+                                 </div>
+                                 <div class="form-group col-md-4">
+                                    <label for="">Last Name</label>
+                                    <apex:input type="text" value="{!plname}" html-placeholder="Last Name"  styleClass="form-control" tabindex="14" />
+                                 </div>
+                                 <div class="form-group col-md-4">
+                                    <label for="">Company</label>
+                                    <apex:input type="text" value="{!pcompany}" html-placeholder="Company"  styleClass="form-control" tabindex="15" />
+                                 </div>
+                              </div>
+                              <div class="form-row">
+                                 <div class="form-group col-md-3">
+                                    <label for="">Email Address</label>
+                                    <apex:input type="text" value="{!pemailaddress}" html-placeholder="Email Address"  styleClass="form-control" tabindex="16" />
+                                 </div>
+                                 <div class="form-group col-md-3">
+                                    <label for="">Telephone</label>
+                                    <apex:input type="text" value="{!ptelephone}" html-placeholder="Telephone"  styleClass="form-control" tabindex="17" />
+                                 </div>
+                                 <div class="form-group col-md-3">
+                                    <label for="">Mobile Phone</label>
+                                    <apex:input type="text" value="{!pmobilephone}" html-placeholder="Mobile Phone" styleClass="form-control" tabindex="18" />
+                                 </div>
+                                 <div class="form-group col-md-3">
+                                    <label for="">Street</label>
+                                    <apex:input type="text" value="{!pstreet}" html-placeholder="Street" styleClass="form-control" tabindex="19" />
+                                 </div>
+                              </div>
+                              <div class="form-row">
+                                 <div class="form-group col-md-3">
+                                    <label for="">City</label>
+                                    <apex:input type="text"  value="{!pcity}" html-placeholder="City" styleClass="form-control" tabindex="20" />
+                                 </div>
+                                 <div class="form-group col-md-3">
+                                    <label for="">State/County</label>
+                                    <apex:input type="text" value="{!pstate}"  html-placeholder="State/County"  styleClass="form-control" tabindex="21" />
+                                 </div>
+                                 <div class="form-group col-md-3">
+                                    <label for="">Country</label>
+                                    <apex:input type="text" value="{!pcountry}" html-placeholder="Country" styleClass="form-control" tabindex="22" />
+                                 </div>
+                                 <div class="form-group col-md-3">
+                                    <label for="">Zip</label>
+                                    <apex:input type="text" value="{!pzip}" html-placeholder="Zip" styleClass="form-control" tabindex="23" />
+                                 </div>
+                              </div>
+                           </div>
+                           <!--Pickup Address Close-->
+                           <!--Delivery Address-->
+                           <div class="tab" id="CustomerTab">
+                              <h5>Delivery Address</h5>
+                              <div class="form-row">
+                                 <div class="form-group col-md-4">
+                                    <label for="">First Name</label>
+                                    <apex:input type="text" value="{!dfname}" html-placeholder="First Name" styleClass="form-control" />
+                                 </div>
+                                 <div class="form-group col-md-4">
+                                    <label for="">Last Name</label>
+                                    <apex:input type="text" value="{!dlname}" html-placeholder="Last Name"  styleClass="form-control" />
+                                 </div>
+                                 <div class="form-group col-md-4">
+                                    <label for="">Company</label>
+                                    <apex:input type="text" value="{!dcompany}" html-placeholder="Company"  styleClass="form-control"/>
+                                 </div>
+                              </div>
+                              <div class="form-row">
+                                 <div class="form-group col-md-3">
+                                    <label for="">Email Address</label>
+                                    <apex:input type="text" value="{!demailaddress}" html-placeholder="Email Address" styleClass="form-control" />
+                                 </div>
+                                 <div class="form-group col-md-3">
+                                    <label for="">Telephone</label>
+                                    <apex:input type="text" value="{!dtelephone}" html-placeholder="Telephone" styleClass="form-control" />
+                                 </div>
+                                 <div class="form-group col-md-3">
+                                    <label for="">Mobile Phone</label>
+                                    <apex:input type="text" value="{!dmobilephone}" html-placeholder="Mobile Phone" styleClass="form-control" />
+                                 </div>
+                                 <div class="form-group col-md-3">
+                                    <label for="">Street</label>
+                                    <apex:input type="text" value="{!dstreet}" html-placeholder="Street" styleClass="form-control"/>
+                                 </div>
+                              </div>
+                              <div class="form-row">
+                                 <div class="form-group col-md-3">
+                                    <label for="">City</label>
+                                    <apex:input type="text" value="{!dcity}" html-placeholder="City"  styleClass="form-control" />
+                                 </div>
+                                 <div class="form-group col-md-3">
+                                    <label for="">State/County</label>
+                                    <apex:input type="text" value="{!dstate}" html-placeholder="State/County"  styleClass="form-control"/>
+                                 </div>
+                                 <div class="form-group col-md-3">
+                                    <label for="">Country</label>
+                                    <apex:input type="text"  value="{!dcountry}" html-placeholder="Country" styleClass="form-control" />
+                                 </div>
+                                 <div class="form-group col-md-3">
+                                    <label for="">Zip</label>
+                                    <apex:input type="text" value="{!dzip}" html-placeholder="Zip" styleClass="form-control" />
+                                 </div>
+                              </div>
+                           </div>
+                           <!--Delivery Address close-->
+                           <!--Prouct Info-->
+                           <apex:inputhidden id="quant2" value="{!wquant2}" />
+                           <apex:inputhidden id="wrInId" value="{!wrapIndex}" />
+                           <div class="tab" id="CustomerTabprdtinfo">
+                              <h5>Prouct Info</h5>
+                              <div class="form-group col-md-12">
+                                 <script>
+                                    function changequantity(k,quant){
+                                        
+                                       // alert('k=='+k);
+                                        try{
+                                        document.getElementById('{!$Component.wrInId}').value=k;
+                                        document.getElementById('{!$Component.quant2}').value=quant;
+                                        }catch(e){
+                                            alert(e);
+                                        }
+                                    }
+                                 </script>
+                                 <apex:outputPanel id="ProdTabId">
+                                    <table class="table table-bordered case-summary-table" id="ProductAddTable" >
+                                       <tbody>
+                                          <apex:variable var="count" value="{!0}"   />
+                                          <apex:repeat value="{!allProductList}" var="apList" id="TABLIST">
+                                             <tr>
+                                                <td class="col-md-1">
+                                                   <apex:inputCheckbox id="myCheck"  style="margin: 11px 0px 0px 15px;">
+                                                      <apex:actionSupport reRender="none" event="onclick" action="{!checkFunction}">
+                                                         <apex:param name="checkboxcheck" value="{!count}"/>
+                                                      </apex:actionSupport>
+                                                   </apex:inputCheckbox>
+                                                </td>
+                                                <td class="col-md-3" id="">
+                                                   <apex:selectList value="{!apList.selectedproductFamily}" size="1" multiselect="false" styleClass="form-control" id="hav7"  >
+                                                      <apex:selectOptions value="{!apList.productFamily}"  >
+                                                      </apex:selectOptions>
+                                                      <apex:actionSupport event="onchange" action="{!WrapProductlist}" reRender="i12">
+                                                         <apex:param name="windex" value="{!count}" assignTo="{!wrapIndex}"/>
+                                                      </apex:actionSupport>
+                                                   </apex:selectList>
+                                                </td>
+                                                <td class="col-md-3 tdxxx" >
+                                                   <apex:outputPanel id="i12">
+                                                      <apex:selectList value="{!apList.selectedProd}" size="1" multiselect="false" styleClass="form-control">
+                                                         <apex:selectOptions id="oppid" value="{!apList.product}"  />
+                                                      </apex:selectList>
+                                                   </apex:outputPanel>
+                                                </td>
+                                                <td class="col-md-3" id="">
+                                                   <apex:input type="datetime-local" styleClass="form-control" value="{!apList.productInfodate1}"  />
+                                                </td>
+                                                <td class="col-md-2" id="">
+                                                   <input type="file" placeholder="Invoice copy" class="form-control" />
+                                                </td>
+                                             </tr>
+                                             <apex:variable value="{!count+1}" var="count"/>
+                                          </apex:repeat>
+                                       </tbody>
+                                    </table>
+                                 </apex:outputPanel>
+                                 <div style="text-align:left; margin-left: 15px;">
+                                    <apex:outputPanel styleClass="cursor">
+                                       <i class="fa fa-plus-circle" style="font-size:25px;color:#0565cc; padding: 0px 10px 0px 0px;" title="Add Product"></i>
+                                       <apex:actionSupport event="onclick" action="{!addproductrow}" reRender="ProdTabId"/>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel styleClass="cursor">
+                                       <i class="fa fa-times-circle" style="font-size:25px;color:#d81712; padding: 0px 10px 0px 0px;" title="Delete Product"></i>
+                                       <apex:actionSupport event="onclick" action="{!DelProductRow}" reRender="ProdTabId"/>
+                                    </apex:outputPanel>
+                                 </div>
+                              </div>
+                              <div class="form-group col-md-12">
+                                 <label for="">Fault Description</label>
+                                 <apex:inputTextarea value="{!description}" styleClass="form-control" rows="5"/>
+                              </div>
+                           </div>
+                           <!--Prouct Info close-->
+                           <div class="pannel-footer">
+                              <div style="float:right;">
+                                 <button type="button" id="prevBtn" onclick="nextPrev(-1)" class="action-button btn-info" style="display: inline;">Previous</button>
+                                 <button type="button" id="nextBtn" onclick="nextPrev(1)" class="action-button btn-primary" style="display: inline; " tabindex="12">Next</button>
+                                 <button type="button" id="submitBtn" class="action-button btn-primary" onclick="doSubmit()" style="display: inline; ">Submit</button>
+                              </div>
+                           </div>
+                        </div>
+                     </div>
+                  
+               </div>
+               <div style="text-align:center;margin-top:40px; display:none;">
+                  <span class="step"></span>
+                  <span class="step"></span>
+                  <span class="step"></span>
+                  <span class="step"></span>
+               </div>
+            </div>
+         </apex:form>
+      </div>
+      <a id="back2Top" href="#" title="Go to Top">&#10148;</a>
+      <!--#############################FOOTER SECTION################################--->
+      <section>
+         <c:portal_footer />
+      </section>
+      <!--#############################################################--->
+      <!-- end of navbar-->
+      <script>
+         var conid = '{!$CurrentPage.parameters.id}';
+         
+         function gotomyCase(){
+         window.location.href =  '/apex/DistributorCaseRegister?id='+conid;
+         
+         }
+      </script>
+      <!--#########################################################-->
+      <!--Script for Tab section Added by Suman 27-Sep_2018 -->
+      <script>
+         var currentTab = 0; // Current tab is set to be the first tab (0)
+         showTab(currentTab); // Display the crurrent tab
+         
+         function showTab(n) {
+         // This function will display the specified tab of the form...
+         var x = document.getElementsByClassName("tab");
+         console.log('tab x========='+JSON.stringify(x));
+         x[n].style.display = "block";
+         //... and fix the Previous/Next buttons:
+         if (n == 0) {
+          document.getElementById("prevBtn").style.display = "none";
+         } else {
+          document.getElementById("prevBtn").style.display = "inline";
+         }
+         if (n == (x.length - 1)) {
+          document.getElementById("nextBtn").style.display = "none";
+          document.getElementById("submitBtn").style.display = "inline";
+         } else {
+          document.getElementById("nextBtn").style.display = "inline";
+          document.getElementById("submitBtn").style.display = "none";
+         }
+         //... and run a function that will display the correct step indicator:
+         console.log('n========='+n);
+         fixStepIndicator(n)
+         }
+         
+         function nextPrev(n) {
+         // This function will figure out which tab to display
+         var x = document.getElementsByClassName("tab");
+         // Exit the function if any field in the current tab is invalid:
+         //if (n == 1 && !validateForm()) return false;
+         // Hide the current tab:
+         x[currentTab].style.display = "none";
+         // Increase or decrease the current tab by 1:
+         currentTab = currentTab + n;
+         // if you have reached the end of the form...
+         if (currentTab >= x.length) {
+          // ... the form gets submitted:
+          document.getElementById("doa").submit();
+          return false;
+         }
+         // Otherwise, display the correct tab:
+         showTab(currentTab);
+         }
+         
+         function fixStepIndicator(n) {
+         // This function removes the "active" class of all steps...
+         var i, x = document.getElementsByClassName("step");
+         for (i = 0; i < x.length; i++) {
+         x[i].className = x[i].className.replace(" active", "");
+         }
+         //... and adds the "active" class on the current step:
+         x[n].className += " active";
+         }
+      </script>
+      <!--product add table script-->
+      <script>
+         function addRow(tableID) {
+         
+         var table = document.getElementById(tableID);
+         
+         var rowCount = table.rows.length;
+         var row = table.insertRow(rowCount);
+         
+         var colCount = table.rows[0].cells.length;
+         
+         for(var i=0; i<colCount; i++) {
+         
+             var newcell = row.insertCell(i);
+         
+             newcell.innerHTML = table.rows[0].cells[i].innerHTML;
+             //alert(newcell.childNodes);
+             switch(newcell.childNodes[0].type) {
+                 case "text":
+                         newcell.childNodes[0].value = "";
+                         break;
+                 case "checkbox":
+                         newcell.childNodes[0].checked = false;
+                         break;
+                 case "select-one":
+                         newcell.childNodes[0].selectedIndex = 0;
+                         break;
+             }
+         }
+         
+         }
+         
+         function deleteRow(tableID) {
+         try {
+         var table = document.getElementById(tableID);
+         var rowCount = table.rows.length;
+         console.log('rowCount'+rowCount);
+         for(var i=0; i<rowCount; i++) {
+             var row = table.rows[i];
+             var chkbox = row.cells[0].childNodes[0];
+             if(null != chkbox && true == chkbox.checked) {
+                 if(rowCount <= 1) {
+                     alert("Cannot delete all the rows.");
+                     break;
+                 }
+                 table.deleteRow(i);
+                 rowCount--;
+                 i--;
+             }
+         
+         
+         }
+         }catch(e) {
+             alert(e);
+         }
+         
+         }
+         
+      </script>
+      <script>
+         function doSubmit(){
+         <!--This method call the PageReference method via actionFunction HAVING name CallApexMethod-->
+         CallApexMethod();
+            
+         
+         }
+         
+      </script>
+   </body>
+   <apex:form >
+      <apex:outputPanel id="modal1">
+         <!--#######################COMMENT SUBMIT MODAL##################################-->
+         <apex:outputPanel layout="block" rendered="{!showModal1=true}" styleClass="modal1">
+            <div id="comment-confirmation">
+               <div class="modal-dialog">
+                  <div class="modal-content custom-modal">
+                     <div class="modal-header">
+                        <apex:commandLink value="x" action="{!CLoseModal1_method}" reRender="modal1" styleClass="close" style="height:10px"/>
+                        <apex:image url="{!URLFOR($Resource.img, 'img/logo.png')}" styleclass="popup-logo" />
+                     </div>
+                     <div class="modal-body" style="text-align:center;">
+                        <apex:image url="{!$Resource.False}" height="40"/>
+                        <p style="font-size: 15px; text-align: center; margin-top:10px;">Your DOA has been Already received.</p>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </apex:outputPanel>
+      </apex:outputPanel>
+   </apex:form>
+</apex:page>
+******************************************************Apex Controller*********************************************************
+/*
+        Author: Krrish
+        Created Date: 22/10/2018
+        Created For: This apex class is implemented for Insert the records of Customer Details,Pickup Address and Delivery Address from the portal on the Custom object "DOA".
+*/
+
+public class DOARequestController {
+
+  //variable declaration for customer details
+  public string cfname{get;set;}
+  public string clname{get;set;}
+  public string ccompany{get;set;}
+  public string caddress{get;set;}  
+  public string ccity{get;set;}
+  public string czip{get;set;}
+  public string ccountry{get;set;}
+  public string ctelephone{get;set;}
+  public string cemailaddress{get;set;}
+  public string cmobilephone{get;set;}
+  public string cstreet{get;set;}
+  public string cstate{get;set;}
+  
+  //variable declaration for Pickup Address
+  public string pfname{get;set;}
+  public string plname{get;set;}
+  public string pcompany{get;set;}
+  public string paddress{get;set;}
+  public string pcity{get;set;}
+  public string pzip{get;set;}
+  public string pcountry{get;set;}
+  public string ptelephone{get;set;}
+  public string pemailaddress{get;set;}
+  public string pmobilephone{get;set;}
+  public string pstreet{get;set;}
+  public string pstate{get;set;}
+  
+  //variable declaration for Delivery Address
+  public string dfname{get;set;}
+  public string dlname{get;set;}
+  public string dcompany{get;set;}
+  public string daddress{get;set;}
+  public string dcity{get;set;}
+  public string dzip{get;set;}
+  public string dcountry{get;set;}
+  public string dtelephone{get;set;}
+  public string demailaddress{get;set;}
+  public string dmobilephone{get;set;}
+  public string dstreet{get;set;}
+  public string dstate{get;set;}
+  
+   //variable declaration for Prouct Info
+  public list<selectOption> selectProductList {get;set;}
+  public string selectProduct{get;set;}
+  public list<selectOption> selectProdList {get;set;}
+  public string selectedProd{get;set;}
+  public list<selectOption> ProductFamilyList {get;set;}
+  public string ProductFamily{get;set;}
+  public Integer wrapIndex{get;set;}
+  public list<allProducts> allProductList{get;set;}
+  public Integer wquant2{get;set;}
+  public string description{get;set;}
+  public boolean showModal1{get;set;}
+  public Set<String> myprod;
+  public Set<String> myallProdList;  
+  
+  
+  
+//creating set for checkbox 
+  public Set<Integer> selectcheckbox;
+  
+  public PageReference doSave(){
+  
+  string conid=apexpages.currentpage().getparameters().get('id');
+  DOA__c doa = new DOA__c();
+  system.debug('conid'+conid);
+   //Insertion of Customer details
+  doa.Contact_Person_First_Name__c = cfname;
+  doa.Last_Name__c = clname;
+  doa.Contact__c=conid;
+  doa.Company__c = ccompany;
+  doa.Address__c = caddress;
+  doa.city__c = ccity;
+  doa.Zip__c = czip;
+  doa.Country__c = ccountry;
+  doa.Telephone__c = ctelephone;
+  doa.Email_Address__c = cemailaddress;
+  doa.Mobile_Phone__c = cmobilephone;
+  doa.Street__c = cstreet;
+  doa.State_County__c = cstate;
+  
+   //Insertion of Pickup Address
+   doa.Contact_person_First_Namep__c = pfname;
+   doa.Last_Namep__c = plname;
+   doa.Companyp__c = pcompany;
+   doa.Addressp__c= paddress;
+   doa.Cityp__c = pcity;
+   doa.Zipp__c = pzip;
+   doa.Countryp__c = pcountry;
+   doa.Telephonep__c = ptelephone;
+   doa.Email_Addressp__c = pemailaddress;
+   doa.Mobile_Phonep__c = pmobilephone;
+   doa.Streetp__c = pstreet;
+   doa.State_Countyp__c = pstate; 
+   
+   //Insertion of Delivery Address
+   doa.Contact_person_First_Named__c = dfname;
+   doa.Last_Named__c = dlname;
+   doa.Companyd__c = dcompany;
+   doa.Addressd__c = daddress;
+   doa.Cityd__c = dcity;
+   doa.Zipd__c = dzip;
+   doa.Countryd__c = dcountry;
+   doa.Telephoned__c = dtelephone;
+   doa.Email_Addressd__c = demailaddress;
+   doa.Mobile_Phoned__c = dmobilephone;
+   doa.Streetd__c = dstreet;
+   doa.State_Countyd__c = dstate;
+  // TO Match product from the database. 
+   myallProdList = new Set<String>();
+   
+    myprod = new Set<String>();
+   for(allProducts allp : allProductList){
+      myprod.add(allp.selectedProd);
+     }
+  
+   for(DOA__c alldoaList : [select id,(select id,Product__r.Name from DOA_Products__r),Street__c,city__c,State_County__c,Country__c,Zip__c from DOA__c where Street__c=:cstreet AND city__c=:ccity AND State_County__c=:cstate AND Country__c=:ccountry AND Zip__c=:czip]){
+       
+       for(DOA_Product__c dpr:alldoalist.DOA_Products__r){
+            system.debug('=====dpr.Product__r.Name======'+dpr.Product__r.Name);
+       
+             myallProdList.add(dpr.Product__r.Name);
+      
+       }
+   }
+     system.debug('myprod======set1'+myprod);
+     system.debug('myallProdList========set2'+myallProdList);
+     system.debug('display======'+myprod.containsAll(myallProdList));
+     
+  
+     
+      if( myprod.size()>0 && myallProdList.size()>0 && myprod.containsAll(myallProdList)){
+      
+                system.debug('=========if method called======'); 
+                ShowModal1_method();
+      }
+        else{
+         insert doa;
+         system.debug('else=======');
+          
+    
+  
+  List<DOA_Product__c> doapc = new List<DOA_Product__c>();
+  
+  for(allProducts allp : allProductList){
+             for(Product2 p2 : [select id ,Name,Family,Active__c from Product2 where Name =:allp.selectedProd])
+             {
+            
+            
+    DOA_Product__c dop = new DOA_Product__c();
+    dop.Product_Family__c = allp.selectedproductFamily; 
+    dop.Product__c = p2.id;
+    dop.Date_Time__c = allp.productInfodate1;
+    dop.Description__c = description;
+    dop.DOA__c = doa.id;
+    doapc.add(dop);
+       }
+      
+  }
+  
+  if(doapc.size()>0){
+  
+   insert doapc;
+  }
+     PageReference pr=new PageReference('/apex/MyDOARequest?id='+conid);
+  pr.setRedirect(true);
+  return pr;
+ 
+  
+ }   
+      return null;
+   }
+    
+   public DOARequestController() {  
+      selectcheckbox = new Set<Integer>();  
+     allProductList=new list<allProducts>();
+     
+        
+  addproductrow();
+    }
+    
+     public list<SelectOption> ProdFamilyList(){
+        ProductFamilyList = new List<selectOption>();
+        ProductFamilyList.add(new SelectOption('', 'Please Select'));
+        Schema.DescribeFieldResult fieldResult3111 = Product2.Family.getDescribe();
+        List<Schema.PicklistEntry> cou3111 = fieldResult3111.getPicklistValues();
+        for( Schema.PicklistEntry f : cou3111){
+          ProductFamilyList.add(new SelectOption(f.getLabel(), f.getValue()));
+        } 
+        return ProductFamilyList;
+     }  
+     
+  //Use of Wrapper class
+  public class allProducts {
+  public list<selectOption> productFamily{get;set;}
+  public list<selectOption> product{get;set;}
+  public Integer quantity{get;set;}
+  public String selectedproductFamily{get;set;}
+  public String selectedProd{get;set;}
+  public integer WrapperIndex{get;set;}
+  public DateTime productInfodate1{get;set;}
+
+}
+   public void WrapProductlist(){
+         string pp=apexpages.currentpage().getparameters().get('windex');
+         system.debug('wrapIndex======'+wrapIndex);
+         allProductList[wrapIndex].product=getListProduct();
+         
+     }
+     
+     public void Wrapuantity(){
+         system.debug('1=='+allProductList[wrapIndex].quantity);
+        allProductList[wrapIndex].quantity=wquant2;
+        system.debug('2=='+allProductList[wrapIndex].quantity);
+     }
+     
+     Public list<SelectOption> getListProduct(){ 
+      
+ 
+        selectProductList= new List<selectOption>();
+        if(allProductList[wrapIndex].selectedproductFamily!=''){
+             system.debug('productstrin family'+allProductList[wrapIndex].selectedproductFamily);
+             for(Product2 p2 : [select id ,Name,Family,Active__c from Product2 where Family =:allProductList[wrapIndex].selectedproductFamily and Active__c != False])
+             {
+                  selectProductList.add(new SelectOption(p2.name, p2.name));
+                  
+             }
+         }
+         system.debug('wrapper======'+myprod);
+         return selectProductList;
+     }
+
+   public void DelProductRow(){
+          Integer k = allProductList.size();                      
+          for(Integer i=k-1;i>0;i--){
+              if(selectcheckbox.contains(i)){
+               allProductList.remove(i);
+                selectcheckbox.remove(i);
+              }
+          
+
+          }
+        system.debug('===allProductList=='+allProductList);  
+    }
+public void checkFunction(){    
+      string pp=apexpages.currentpage().getparameters().get('checkboxcheck');
+      selectcheckbox.add( Integer.valueof(pp));        
+     }
+  public void addproductrow()
+{
+   allProducts ap= new allProducts(); 
+   ap.productFamily=ProdFamilyList();  
+   allProductList.add(ap); 
+    }
+    
+    public PageReference RedirectDoa(){
+    
+        String idd=ApexPages.currentPage().getParameters().get('id');
+        PageReference pr=new PageReference('/apex/MyDOARequest?id='+idd);
+        pr.setRedirect(True);
+        return pr;
+        }
+   
+   
+      public void ShowModal1_method(){
+        system.debug('=======methodcalled==========');
+        showModal1=true;
+    }
+    public void CLoseModal1_method(){
+        showModal1=false;
+    }
+   
+   
+
+}
