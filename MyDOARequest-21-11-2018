@@ -1,0 +1,259 @@
+<apex:page standardStylesheets="false" showHeader="false" sidebar="false" docType="html-5.0" controller="MyDOARequestCntrl">
+   <apex:form >
+      <c:head_include ></c:head_include>
+      <style>
+       /* == Custom Style for page layout== */
+         .download-center{
+         background-image: url('{!URLFOR($Resource.img, '/img/backgrounds/demo-redquest-banner.jpg')}');
+         height:250px; 
+         min-height:250px; 
+         width:100%; 
+         margin:0; 
+         padding:0;     
+         background-size: cover;
+         }
+         /* FILE INPUT */
+         .fileUpload {
+         position: relative;
+         overflow: hidden;
+         margin: 10px;
+         cursor: pointer;
+         }
+         .fileUpload input.upload {
+         position: absolute;
+         top: 0;
+         right: 0;
+         margin: 0;
+         padding: 0;
+         font-size: 20px;
+         cursor: pointer;
+         opacity: 0;
+         filter: alpha(opacity=0);
+         width:50px;
+         }
+         .cursor a{
+         cursor:pointer;
+         font-size:14px;
+         }
+         .dataTables_filter input[type=search] {
+         border: 1px solid #c7c6c6;
+         height: 30px;
+         border-radius: 3px;
+         width: 250px;
+         margin-bottom: 10px;
+         margin-top: 10px;
+         }
+         .dataTables_filter optgroup, select{
+         border: 1px solid #c7c6c6;
+         height: 30px;
+         border-radius: 3px;
+         margin-bottom: 10px;
+         margin-top: 10px;
+         width:70px;
+         }
+         .dataTables_wrapper .dataTables_paginate .paginate_button{
+         padding: 0.2em 0.6em !important;
+         }
+      </style>
+      <body>
+        <!--===Script for fix the head nav on page scroll===-->
+
+        <script>
+            $(window).scroll(function() {
+                if($(this).scrollTop()>0) {
+                    $( ".navbar-me" ).addClass("fixed-me");
+                } else {
+                    $( ".navbar-me" ).removeClass("fixed-me");
+                }
+            });
+        </script>
+         <!--===End=--> 
+
+         <!--navbar menu-->
+         <section>
+            <c:DealerSideMenu ></c:DealerSideMenu>
+         </section>
+         <div id="main">
+            <div style="width:90%; margin:0 auto;">
+               <div class="row" style="min-height:350px;">
+                  <div class="row">
+                     <div class="title-grid">
+                        <h3>My DOA Requests</h3>
+                        <p class="forgotten" style="text-align:right;">
+                           <apex:commandLink action="{!RedirectDoa}"><span style="margin-right:5px;"><i class="fa fa-file-text-o"></i></span> Create a new request </apex:commandLink>
+                        </p>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <div class="table-responsive" id="accordion">
+                        <!---TABLE start to view all DOA Requests for Partner added by krrish------>
+                        <table id="demoRequestTable" class="display table table-bordered" cellspacing="0" style="width:100%; ">
+                           <thead>
+                              <tr style="background: #eee; text-align: left;  font-weight: bold;">
+                                 <td class="col-md-1">S.No</td>
+                                 <td class="col-md-2">Company</td>
+                                 <td class="col-md-2">Customer Name</td>
+                                 <td class="col-md-2">Email Address</td>
+                                 <td class="col-md-1">Mobile Phone</td>
+                                 <td class="col-md-2">Address</td>
+                                 <td class="col-md-3">&nbsp;</td>
+                              </tr>
+                              <apex:variable value="{!0}" var="count"/>
+                              <apex:repeat value="{!doaList}" var="dlist">
+                                 <apex:variable value="{!count+1}" var="count"/>
+                                 <tr>
+                                    <td style="text-align: left;" ><span>{!count}</span></td>
+                                    <td style="text-align: left;" ><span>{!dlist.Company__c}</span></td>
+                                    <td style="text-align: left;" ><span>{!dlist.Contact_Person_First_Name__c} &nbsp; {!dlist.Last_Name__c}</span></td>
+                                    <td style="text-align: left;"><span>{!dlist.Email_Address__c}</span></td>
+                                    <td>{!dlist.Mobile_Phone__c}</td>
+                                    <td>{!dlist.Street__c} &nbsp;{!dlist.city__c} &nbsp;{!dlist.Country__c} &nbsp;{!dlist.Zip__c}</td>
+                                    <td style="text-align: right; margin-right:10px;" >
+                                       <a data-toggle="collapse" data-parent="#accordion" href="#collapsethree{!dlist.Id}">
+                                          <apex:commandLink action="{!RedirectDetailedDoa}">
+                                             <apex:param name="doaid" value="{!dlist.id}"/>
+                                             <span>View Details</span>
+                                             <i class="fa fa-chevron-circle-down" style="font-size:16px; margin-left:10px;"> </i>
+                                          </apex:commandLink>
+                                       </a>
+                                    </td>
+                                 </tr>
+                              </apex:repeat>
+                           </thead>
+                           <tbody>
+                           </tbody>
+                        </table>
+                        <!-----TABLE End------------>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <a id="back2Top" href="#" title="Go to Top">&#10148;</a>
+         <!--#############################FOOTER SECTION################################--->
+         <section>
+            <c:portal_footer />
+         </section>
+         <!--#############################################################--->
+         <!-- end of navbar-->
+         <script>
+            /*Scroll to top when arrow up clicked BEGIN*/
+            $(window).scroll(function() {
+                var height = $(window).scrollTop();
+                if (height > 100) {
+                    $('#back2Top').fadeIn();
+                } else {
+                    $('#back2Top').fadeOut();
+                }
+            });
+            $(document).ready(function() {
+                $("#back2Top").click(function(event) {
+                    event.preventDefault();
+                    $("html, body").animate({ scrollTop: 0 }, "slow");
+                    return false;
+                });
+            
+            });
+             /*Scroll to top when arrow up clicked END*/
+         </script>
+         <script>
+            /* Nav bar Open Left to Right */
+            function openNav() {
+                document.getElementById("mySidenav").style.width = "350px";
+                document.getElementById("main").style.marginRight = "350px";
+                document.body.style.backgroundColor = "rgba(230,230,230,0.4)";
+            }
+            function closeNav() {
+                document.getElementById("mySidenav").style.width = "0";
+                document.getElementById("main").style.marginRight= "0";
+                document.body.style.backgroundColor = "white";
+            }
+         </script>
+         <script>
+            var conid = '{!$CurrentPage.parameters.id}';
+            
+            function gotomyDOARequest(){
+             window.location.href =  '/apex/DOARequest?id='+conid;
+            
+            
+            }
+            
+         </script>
+         <script>
+            $(document).ready(function() {
+                $("div.bhoechie-tab-menu>div.list-group>a").click(function(e) {
+                    e.preventDefault();
+                    $(this).siblings('a.active').removeClass("active");
+                    $(this).addClass("active");
+                    var index = $(this).index();
+                    $("div.bhoechie-tab>div.bhoechie-tab-content").removeClass("active");
+                    $("div.bhoechie-tab>div.bhoechie-tab-content").eq(index).addClass("active");
+                    
+                });
+                
+            });
+            
+         </script>
+         <script>
+            $(document).ready(function() {
+            
+                var idfield = '{!$CurrentPage.parameters.id}';
+                console.log('idfield========='+idfield);
+                       
+                    });          
+         </script>
+         <script type="text/javascript">
+            function reloadPage(){
+                location.reload(true);
+            }
+         </script>
+        
+      </body>
+   </apex:form>
+</apex:page>
+*******************************************************Apex Controller*********************************************************
+/*
+                Author:krrish
+                created Date:14-11-2018
+                Created For : This apex class is implemented to view all the DOA Request for Partner Portal and Customer Portal.
+*/
+global class MyDOARequestCntrl {
+ 
+     // this method return all the DOA Request related to the contact whose id passed into the url. 
+    public List<DOA__c> getdoaList(){
+    
+    
+    String doacurrentid = ApexPages.currentPage().getParameters().get('id');
+    system.debug('doacurrentid ================'+doacurrentid );
+    List<DOA__c> doa = new List<DOA__c>();
+    doa = [SELECT Id,Company__c,Contact_Person_First_Name__c,Last_Name__c,Email_Address__c,Mobile_Phone__c,city__c,Street__c,Zip__c,Country__c from DOA__c where Contact__c=:doacurrentid];
+    system.debug('====doa========'+doa);
+    return doa;
+    
+    }
+    
+    //Method for Redirecting to ViewDOARequest Page and append the doid into the url.
+    public PageReference RedirectDetailedDoa(){
+    
+        string idd=ApexPages.currentPage().getParameters().get('id');
+        id oppid=ApexPages.currentPage().getParameters().get('doaid');
+        PageReference pr=new PageReference('/apex/ViewDOARequest?id='+idd);
+        pr.getParameters().put('doid', oppid);
+        pr.setRedirect(True);
+        return pr; 
+    
+    }
+    
+     //Method for Redirecting to DOARequest Page for Create a new request.
+    public pageReference RedirectDoa(){
+    
+       string idd=ApexPages.currentPage().getParameters().get('id');
+       PageReference pr=new PageReference('/apex/DOARequest?id='+idd);
+       pr.setRedirect(True);
+       return pr;
+    
+    }
+
+
+
+}
