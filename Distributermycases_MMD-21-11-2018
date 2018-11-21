@@ -1,0 +1,189 @@
+<apex:page standardStylesheets="false" showHeader="false" sidebar="false" docType="html-5.0" controller="DistributermycasesCntrl">
+   <apex:form >
+      <c:head_include ></c:head_include>
+      <c:portal_Script ></c:portal_Script>
+      <style>
+      /* == Custom Style for page layout== */
+      
+         .download-center{
+         background-image: url('{!URLFOR($Resource.img, '/img/backgrounds/profile-banner.jpg')}');
+         height:200px; 
+         min-height:250px; 
+         width:100%; 
+         margin:0; 
+         padding:0;     
+         background-size: cover;
+         }
+         .action-button a{
+         line-height:19px !important;
+         }
+         .custom-modal{
+         text-align:center;
+         }
+         /* FILE INPUT */
+         .fileUpload {
+         position: relative;
+         overflow: hidden;
+         margin: 10px;
+         cursor: pointer;
+         }
+         .fileUpload input.upload {
+         position: absolute;
+         top: 0;
+         right: 0;
+         margin: 0;
+         padding: 0;
+         font-size: 20px;
+         cursor: pointer;
+         opacity: 0;
+         filter: alpha(opacity=0);
+         width:50px;
+         }
+         .welcome-user{
+         background: none;
+         border: none;
+         font-size: 14px;
+         }
+         .popup-logo{
+         width:200px;
+         }
+         .tex-center{
+         text-align:center;
+         }
+         .case-summary-table{
+         font-size:13px;
+         }
+      </style>
+      <body>
+        <!--===Script for fix the head nav on page scroll===-->
+         <script>
+            $(window).scroll(function() {
+                if($(this).scrollTop()>0) {
+                    $( ".navbar-me" ).addClass("fixed-me");
+                } else {
+                    $( ".navbar-me" ).removeClass("fixed-me");
+                }
+            });
+         </script>
+        <!--===End=--> 
+         <!--navbar menu-->
+         <section>
+            <c:DealerSideMenu ></c:DealerSideMenu>
+         </section>
+         <div id="main">
+            <div style="width:90%; margin:0 auto;">
+               <div class="row" style="min-height:350px;">
+                  <div class="row">
+                     <div class="title-grid">
+                        <h3>My Case</h3>
+                        <p class="forgotten" style="text-align:right;">
+                           <apex:commandLink action="{!RedirectCaseRegister}"><span style="margin-right:5px;"><i class="fa fa-file-text-o"></i></span> Log a New Case </apex:commandLink>
+                        </p>
+                     </div>
+                  </div>
+                  <div class="row" style="min-height:300px;">
+                     <!--//////////////////////////CASE Details View Start///////////////////--->
+                     <div class="table-responsive" id="accordion">
+                        <!---TABLE start to view all case for Partner added by krrish------>
+                        <table id="example" class="display table table-bordered" cellspacing="0" style="width:100%; ">
+                           <thead>
+                              <tr style="background: #eee; text-align: left;  font-weight: bold;">
+                                 <th>S.No.</th>
+                                 <td class="tex-center">Case Number </td>
+                                 <td class="tex-center">Case Status</td>
+                                 <td class="tex-center">Product Name</td>
+                                 <td class="tex-center">Created Date</td>
+                                 <td class="tex-center">Last Comment Date</td>
+                                 <td class="col-md-2  tex-center">&nbsp;</td>
+                              </tr>
+                              <apex:variable value="{!0}" var="count"/>
+                              <apex:repeat value="{!caseList}" var="clist">
+                                 <apex:variable value="{!count+1}" var="count"/>
+                                 <tr>
+                                    <td><span>{!count}</span></td>
+                                    <td><span style="color:#19b9e7;">{!clist.CaseNumber}</span></td>
+                                    <td><span>{!clist.Status}</span></td>
+                                    <td><span>{!clist.Product__r.Name}</span></td>
+                                    <td><span>{!clist.CreatedDate}</span></td>
+                                    <td><span>{!clist.LastModifiedDate}</span></td>
+                                    <td style="text-align: right; margin-right:10px;" >
+                                       <a data-toggle="collapse" data-parent="#accordion" href="#collapsethree{!clist.Id}">
+                                          <apex:commandLink action="{!RedirectViewDistributor}">
+                                             <apex:param name="disid" value="{!clist.id}"/>
+                                             <span>View Details</span>
+                                             <i class="fa fa-chevron-circle-down" style="font-size:16px; margin-left:10px;"> </i>
+                                          </apex:commandLink>
+                                       </a>
+                                    </td>
+                                 </tr>
+                              </apex:repeat>
+                           </thead>
+                           <tbody>
+                           </tbody>
+                        </table>
+                        <!-----TABLE End------------>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <a id="back2Top" href="#" title="Go to Top">&#10148;</a>
+         <!--#############################FOOTER SECTION################################--->
+         <section>
+            <c:portal_footer />
+         </section>
+         <!--#############################################################--->
+         <!-- end of navbar-->
+      </body>
+   </apex:form>
+</apex:page>
+**********************************************************ApexController**********************************************************
+/*
+        Author: Krrish
+        Created For: This apex class is implemented to view all the  case for Partner Portal.
+*/
+
+public class DistributermycasesCntrl {
+
+      // this method return all the cases related to the contact whose id passed into the url. 
+      public List<Case> getcaseList(){
+      
+      string currentid = apexpages.currentpage().getParameters().get('id');
+      system.debug('===currentid==='+currentid);
+      List<Case> cc = new List<Case>();
+      List<contact> cono = new List<contact>();
+
+      cono = [SELECT Id,Name,Email,(select id,Contact_Name__c,Owner.Name,Purchase_Date__c,Contactid,ContactEmail,Status,CaseNumber,Product__r.Name,Product_List__c,Product_Name__c,Product__c,Description,LastModifiedDate,CreatedDate from cases ORDER BY CaseNumber DESC) from contact where id =: currentid limit 1 ];
+      
+          
+      for(Case distributecase :cono[0].cases){
+      
+           cc.add(distributecase);
+      }
+      
+         return cc;
+      
+      
+      } 
+      
+      //Method for Redirecting to DistributorViewDetails_MMD Page and append the caseid into the url.
+      public PageReference RedirectViewDistributor(){
+      
+      string idd = apexpages.currentPage().getParameters().get('Id');
+      string oppid = apexpages.currentpage().getparameters().get('disid');
+      PageReference pr = new PageReference('/apex/DistributorViewDetails_MMD?id='+idd);
+      pr.getparameters().put('caseid',oppid);
+      pr.setRedirect(true);
+      return pr;
+  
+      }
+      //Method for Redirecting to DistributorCaseRegister Page for Log a New Case.
+      public pageReference RedirectCaseRegister(){
+      String currentid = ApexPages.currentPage().getParameters().get('Id');
+      PageReference pr = new PageReference('/apex/DistributorCaseRegister?id='+currentid);
+      pr.setRedirect(true);
+      return pr;
+      }
+
+
+}
