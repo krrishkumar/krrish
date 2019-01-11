@@ -1,0 +1,1365 @@
+<apex:page standardStylesheets="false" showHeader="false" sidebar="false" docType="html-5.0" controller="RMARequestController">
+   <c:head_include ></c:head_include>
+   <c:portal_Script ></c:portal_Script>
+   <meta name="viewport" content="width=device-width" />
+   <style>
+      @media all and (min-width: 960px) {
+      body{
+      font-size: 14px;
+      }
+      }
+      @media all and (max-width: 959px) and (min-width: 600px) {
+      body{
+      font-size: 15px;
+      }
+      .site-logo {
+      padding: 0px 31px !important;
+      margin: 0px 0px;
+      }
+      }
+      @media all and (max-width: 599px) and (min-width: 320px) {
+      body{
+      font-size: 17px;
+      }
+      .site-logo {
+      padding: 0px 14px !important;
+      margin: 0px 0px;
+      }
+      }
+      .download-center{
+      background-image: url('{!URLFOR($Resource.img, '/img/backgrounds/profile-banner.jpg')}');
+      height:200px; 
+      min-height:250px; 
+      width:100%; 
+      margin:0; 
+      padding:0;     
+      background-size: cover;
+      }
+      .action-button a{
+      line-height:19px !important;
+      }
+      .custom-modal{
+      text-align:center;
+      }
+      /* FILE INPUT */
+      .fileUpload {
+      position: relative;
+      overflow: hidden;
+      margin: 10px;
+      cursor: pointer;
+      }
+      .fileUpload input.upload {
+      position: absolute;
+      top: 0;
+      right: 0;
+      margin: 0;
+      padding: 0;
+      font-size: 20px;
+      cursor: pointer;
+      opacity: 0;
+      filter: alpha(opacity=0);
+      width:50px;
+      }
+      .welcome-user{
+      background: none;
+      border: none;
+      font-size: 14px;
+      }
+      .tab {
+      display: none;
+      }
+      /* Make circles that indicate the steps of the form: */
+      .step {
+      height: 15px;
+      width: 15px;
+      margin: 0 2px;
+      background-color: #bbbbbb;
+      border: none;  
+      border-radius: 50%;
+      display: inline-block;
+      opacity: 0.5;
+      }
+      /* active progressbar added by indresh */
+          /* Make circles that indicate the steps of the form: */
+      .step1 {
+      height: 15px;
+      width: 15px;
+      margin: 0 2px;
+      background-color: #229af3;
+      border: none;  
+      border-radius: 50%;
+      display: inline-block;
+      opacity: 1;
+      }
+      /* close */
+      .step.active {
+      opacity: 1;
+      background:#0796ea;
+      }
+      .step.dactive {
+      opacity: 1;
+      background:#333333;
+      }
+      .step a:before {
+      border:1px solid #333;
+      width: 58px;
+      height: 2px;
+      background: #e9e0cf;
+      position: absolute;
+      right: 22px;
+      top: 5px;
+      }
+      .step:after {
+      display: block; }
+      .step.active:after {
+      content: "";
+      top: 2px;
+      left: 2px;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #999;
+      position: absolute;
+      display: none; }
+      /* Mark the steps that are finished and valid: */
+      .step.finish {
+      background-color: #4CAF50;
+      }
+      textarea.form-control{
+      height:auto;
+      min-height:70px;
+      }
+      .form-control{
+      height: 34px!important;
+      padding: 6px 12px !important;
+      font-size:14px !important;
+      }
+      /* The Modal (background) */
+      .modal1 {          
+      position: fixed; /* Stay in place */
+      z-index: 1200; /* Sit on top */
+      padding-top: 80px; /* Location of the box */
+      left: 0px;
+      top: 0;
+      width: 100%; /* Full width */
+      height: 100%; /* Full height */
+      overflow: auto;/* Enable scroll if needed */
+      background-color: rgb(0,0,0); /* Fallback color */
+      background-color: rgba(0,0,0,0.7); /* Black w/ opacity */
+      }
+      /* STYLE ADDED BY INDRESH FOR FILE UPLOAD PAGE CUSTOME MODAL */
+      /* The Modal (background) */
+      .modal1 {          
+      position: fixed; /* Stay in place */
+      z-index: 150; /* Sit on top */
+      padding-top: 0px; /* Location of the box */
+      left: 0px;
+      top: 0;
+      width: 100%; /* Full width */
+      height: 53.6%; /* Full height */
+      overflow: auto;/* Enable scroll if needed */
+      background-color: rgb(0,0,0); /* Fallback color */
+      background-color: rgba(0,0,0,0.7); /* Black w/ opacity */
+      }
+      /* Modal Content */
+      .modal-content1 {
+      background-color: #fefefe;
+      border-radius: 10px;
+      padding: 10px;           
+      width: 99.4%;
+      height:100%;
+      color:#5b7075 !important;
+      }
+      #imageview-center{
+      background-image: url('{!URLFOR($Resource.DropAndDragImage)}'); 
+      height:200px; 
+      min-height:250px; 
+      width:100%; 
+      margin:0; 
+      padding:0;     
+      background-size: cover;
+      } 
+      /* Outline div */
+      .modal-div1 {
+      background-color: #4195e2;
+      margin: auto;
+      padding: 0px;
+      top-margin:0;       
+      width: 100%;
+      height:100%;
+      }
+      /* Close icon */
+      .close1 {
+      color: #aeafaf;
+      float: right;
+      font-size: 15px;
+      font-weight: bold;
+      }
+      .file{
+      width: auto !important;
+      border: 1px solid #d0d0d0!important;
+      height: 34px!important;
+      border-radius: 3px!important;
+      text-align: left!important;
+      padding: 0!important;
+      background: none!important;
+      }
+      .file-icon{
+      background: #0796ea!important;
+      height: 34px!important;
+      padding: 10px 22px 10px 32px!important;
+      color:#fff!important;
+      }
+      .error-msg-output {
+      color: red;
+      list-style-type: none;
+      font-size: 11px;
+      position: absolute;
+      }
+      .req-mark{
+      color: red;
+      font-size: 17px;
+      line-height: 16px;
+      }
+      .apex-button{
+      height: 28px; 
+      width: 130px;  
+      margin: 0;  
+      padding: 5px 0px;
+      vertical-align: middle;  
+      border: 0;  
+      font-size: 13px;  
+      font-weight: 400;  
+      line-height: 18px;  
+      float: left; 
+      margin: 4px 10px 8px 0px;
+      text-align:center;
+      border-radius:3px;
+      cursor:pointer;
+      }
+      .error-msg{
+      color: red;
+      list-style-type: none;
+      padding: 0px 0 0 0;
+      font-size: 11px;
+      line-height: 8px;
+      }
+      .pd-10{
+      margin-top: 10px;
+      }
+      .btn-width{
+        width:130px;
+        margin: 0px 5px 0px 3px;
+      }
+      .tbl-error-msg-output {
+      color: red;
+      list-style-type: none;
+      font-size: 11px;
+  }
+      
+   </style>
+   <apex:form id="rma">
+      <body>
+         <script>
+            $(window).scroll(function() {
+             if($(this).scrollTop()>0) {
+                 $( ".navbar-me" ).addClass("fixed-me");
+             } else {
+                 $( ".navbar-me" ).removeClass("fixed-me");
+             }
+            });
+         </script>
+         <!--navbar menu-->
+         <apex:outputPanel rendered="{!SHowpage==false}">
+            <section>
+               <div class="download-center">
+                  <c:DealerSideMenu rendered="{!showinteger=2}"></c:DealerSideMenu>
+                  <c:CustomerSideMenu rendered="{!showinteger=1}"></c:CustomerSideMenu>
+               </div>
+            </section>
+            <div id="main">
+               <apex:actionFunction name="CallApexMethod" action="{!doSave}"/>
+               <div style="width:90%; margin:0 auto;">
+                  <div class="row">
+                     <div class="title-grid">
+                        <h3>New RMA Request</h3>
+                        <p class="forgotten" style="text-align:right;">
+                         <apex:outputLink value="/apex/MyRMARequest?id={!currentid }"><span style="margin-right:5px;"><i class="fa fa-file-text-o"></i></span>View RMA Request</apex:outputLink>
+                        </p>
+                     </div>
+                     <span Class="error-msg">Items marked with (*) are required.</span>
+                     <div class="row">
+                        <div class="col-md-12" style="height:15px;">
+                           <apex:outputPanel id="ProdTabId1" >
+                           <apex:messages styleClass="error-msg" />
+                          </apex:outputPanel>
+
+                        </div>
+                     </div>
+                     <apex:outputPanel id="mainpanel">
+                        <div class="panel panel-default" id="wizard">                         
+                           <div class="panel-body" id="case-title">
+                           <!--------------------code for progress bar added by indresh --------------------->
+                         
+                              <!--------------------code for progress bar close ------>
+                              <!--------------------Customer details start--------------------->
+                              
+                              <apex:outputPanel rendered="{!tabIndex==1}"> 
+                                    <div class="title-grid" style="text-align:center;">
+                                      <apex:outputText styleClass="step1"/>
+                                      <apex:outputText styleClass="step"/>
+                                      <apex:outputText styleClass="step"/>
+                                     </div>                            
+                                 <div  id="CustomerTab">
+                                    <h5>Customer Details</h5>
+                                    <div class="row">
+                                       <div class="form-row">
+                                          <div class="form-group col-md-3">
+                                             <label for=""> First Name</label>
+                                             <apex:input type="text" value="{!cfname}" html-placeholder="First Name"   styleClass="form-control"  tabindex="1" />
+                                          </div>
+                                          <div class="form-group col-md-3">
+                                             <label for=""> Last Name<span class="req-mark">*</span></label>
+                                             <apex:input type="text" value="{!clname}" html-placeholder="Last Name" styleClass="form-control" tabindex="2" />
+                                          </div>
+                                          <div class="form-group col-md-3">
+                                             <label for="">Company<span class="req-mark">*</span></label>
+                                             <apex:input type="text" value="{!ccompany}" html-placeholder="Company"  styleClass="form-control" tabindex="3" />
+                                          </div>
+                                          
+                                           <div class="form-group col-md-3">
+                                             <label for="">Email Address<span class="req-mark">*</span></label>
+                                             <apex:outputPanel id="emailid">
+                                                <apex:input type="text" value="{!cemailaddress}" html-placeholder="Email Address"  styleClass="form-control" tabindex="4">
+                                                   <apex:actionSupport event="onchange" reRender="emailid" action="{!checkEmail}"/>
+                                                </apex:input>
+                                                <apex:outputText value="{!errormessage}" styleClass="error-msg-output" />
+                                             </apex:outputPanel>
+                                          </div>
+                                          
+                                       </div>
+                                       <div class="form-row">
+                                         
+                                          <div class="form-group col-md-3">
+                                             <label for="">Phone Number</label>
+                                             <div class="input-group col-md-12">
+                                                <apex:input type="text" value="{!countycodec}"  id="txt1" styleClass="form-control" style="width:23%; height:35px; border-radius: 4px;border: 1px solid #ddd;font-size: 14px; padding: 0 12px; font-weight: 400;"   html-placeholder="+00" tabindex="5">
+                                                   <apex:actionSupport event="onchange" reRender="outid"/>
+                                                </apex:input>
+                                                <apex:input type="text" value="{!ctelephone}"  html-placeholder="Phone Number" style=" padding: 6px 12px!important;width:77%; height:34px; border-radius: 4px;border: 1px solid #ddd;font-size: 14px;font-weight: 400;"  styleClass="form-control" tabindex="6">
+                                                   <apex:actionSupport event="onchange" reRender="outid"/>
+                                                </apex:input>
+                                             </div>
+                                             <apex:outputPanel id="outid">
+                                               
+                                                <apex:outputText value="Invalid Country Code !" rendered="{!if(!BEGINS(countycodec,'+'),true,if(AND(!ISNUMBER(countycodec),LEN(countycodec)>0 ) ,true,false))}"  styleClass="error-msg-output" />
+                                                <apex:outputText value="Invalid Telephone Number !" rendered="{!if(AND(!ISNUMBER(ctelephone),LEN(ctelephone)>0) ,true,false)}" styleClass="error-msg-output" style="margin-left:120px;"></apex:outputText>
+                                             </apex:outputPanel>
+                                          </div>
+                                            <div class="form-group col-md-3">
+                                             <label for="">Mobile Number<span class="req-mark">*</span></label>
+                                             <div class="input-group col-md-12">
+                                                <apex:input type="text" value="{!countycodecmobile}"  id="txt22" styleClass="form-control" style="width:23%; height:35px; border-radius: 4px;border: 1px solid #ddd;font-size: 14px; padding: 0 12px; font-weight: 400;"   html-placeholder="+00" tabindex="7">
+                                                   <apex:actionSupport event="onchange" reRender="outidmobile"/>
+                                                </apex:input>
+                                                <apex:input type="text" value="{!cmobilenumber}"  html-placeholder="Mobile Number" style=" padding: 6px 12px!important;width:77%; height:34px; border-radius: 4px;border: 1px solid #ddd;font-size: 14px;font-weight: 400;"  styleClass="form-control" tabindex="8">
+                                                   <apex:actionSupport event="onchange" reRender="outidmobile"/>
+                                                </apex:input>
+                                             </div>
+                                             <apex:outputPanel id="outidmobile">
+                                               
+                                                <apex:outputText value="Invalid Country Code !" rendered="{!if(!BEGINS(countycodecmobile,'+'),true,if(AND(!ISNUMBER(countycodecmobile),LEN(countycodecmobile)>0 ) ,true,false))}"  styleClass="error-msg-output" />
+                                                <apex:outputText value="Invalid Mobile Number !" rendered="{!if(AND(!ISNUMBER(cmobilenumber),LEN(cmobilenumber)>0) ,true,if(AND(LEN(cmobilenumber)>10,LEN(cmobilenumber)>0),true,false))}" styleClass="error-msg-output" style="margin-left:120px;"></apex:outputText>
+                                             </apex:outputPanel>
+                                          </div>
+                                         
+                                          <div class="form-group col-md-3">
+                                             <label for="">Address Line 1<span class="req-mark">*</span></label>
+                                             <apex:input type="text" value="{!caddressline1}" html-placeholder="Address Line 1" styleClass="form-control" tabindex="9" />
+                                          </div>
+                                            <div class="form-group col-md-3">
+                                             <label for="">Address Line 2</label>
+                                             <apex:input type="text" value="{!caddressline2}" html-placeholder="Address Line 2" styleClass="form-control" tabindex="10" />
+                                          </div>
+                                          
+                                        
+                                       </div>
+                                       <div class="form-row">
+                                       
+                                       <div class="form-group col-md-3">
+                                             <label for="">City<span class="req-mark">*</span></label>
+                                             <apex:input type="text" value="{!ccity}" html-placeholder="City" styleClass="form-control" tabindex="11" />
+                                          </div>
+                                          <div class="form-group col-md-3">
+                                             <label for="">County / State<span class="req-mark">*</span></label>
+                                             <apex:input type="text" value="{!cstate}"  html-placeholder="County / State"  styleClass="form-control" tabindex="12" />
+                                          </div>
+                                          <div class="form-group col-md-2">
+                                             <label for="">Country<span class="req-mark">*</span></label>
+                                             <apex:input type="text" value="{!ccountry}" html-placeholder="Country"  styleClass="form-control" tabindex="13">
+                                                <apex:actionSupport event="onchange" reRender="countryid"/>
+                                             </apex:input>
+                                             <apex:outputPanel id="countryid">
+                                                <apex:outputText value="Enter Correct Country Name " rendered="{!if(AND(ISNUMBER(ccountry)),true,false)}" styleClass="error-msg-output" ></apex:outputText>
+                                             </apex:outputPanel>
+                                          </div>
+                                          <div class="form-group col-md-2">
+                                             <label for="">Postcode / Zipcode<span class="req-mark">*</span></label>
+                                             <apex:input type="text" value="{!czip}" html-placeholder="Postcode / Zipcode" styleClass="form-control" tabindex="14" />
+                                             
+                                          </div>
+                                          <div class="form-group col-md-2">
+                                             <label for="">Opening Hours<span class="req-mark">*</span></label>
+                                             <apex:input type="time" value="{!copnhrs}" html-placeholder="Opening Hours" styleClass="form-control" tabindex="15" />
+                                             
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </apex:outputPanel>
+                              <!----------------------------Customer details close------------------------------>
+                              <!---------------------------Delivery Address----------------------->
+                              <apex:outputPanel rendered="{!tabIndex==2}">
+                                   <div class="title-grid" style="text-align:center;">
+                                      <apex:outputText styleClass="step"/>
+                                      <apex:outputText styleClass="step1"/>
+                                      <apex:outputText styleClass="step"/>
+                                     </div>                                  
+                                 <div  id="CustomerTab">
+                                    <h5>Delivery Address</h5>
+                                    <div class="row">
+                                       <div class="form-row">
+                                          <div class="form-group col-md-3">
+                                             <label for="">First Name<!--<span class="req-mark">*</span>--></label>
+                                             <apex:input type="text" value="{!dfname}" html-placeholder="First Name" styleClass="form-control" tabindex="1" />
+                                          </div>
+                                          <div class="form-group col-md-3">
+                                             <label for="">Last Name<span class="req-mark">*</span></label>
+                                             <apex:input type="text" value="{!dlname}" html-placeholder="Last Name"  styleClass="form-control" tabindex="2" />
+                                          </div>
+                                          <div class="form-group col-md-3">
+                                             <label for="">Company<span class="req-mark">*</span></label>
+                                             <apex:input type="text" value="{!dcompany}" html-placeholder="Company"  styleClass="form-control" tabindex="3"/>
+                                          </div>
+                                           <div class="form-group col-md-3">
+                                             <label for="">Email Address<span class="req-mark">*</span></label>
+                                             <apex:outputPanel id="emailidel">
+                                                <apex:input type="text" value="{!demailaddress}" html-placeholder="Email Address" styleClass="form-control" tabindex="4" >
+                                                   <apex:actionSupport event="onchange" reRender="emailidel" action="{!checkEmailDelivery}"/>
+                                                </apex:input>
+                                                <apex:outputText value="{!errormessaged}" styleClass="error-msg-output" />
+                                             </apex:outputPanel>
+                                          </div>
+                                       </div>
+                                       <div class="form-row">
+                                         
+                                          <div class="form-group col-md-3">
+                                             <label for="">Phone Number</label>
+                                             <div class="input-group col-md-12">
+                                                <apex:input type="text" value="{!countycoded}"  id="txt2" styleClass="form-control" style="width:23%; height:35px; border-radius: 4px;border: 1px solid #ddd;font-size: 14px; padding: 0 12px; font-weight: 400;"   html-placeholder="+00" tabindex="5">
+                                                   <apex:actionSupport event="onchange" reRender="outidelivery"/>
+                                                </apex:input>
+                                                <apex:input type="text" value="{!dtelephone}" html-placeholder="Phone Number" style=" padding: 6px 12px!important;width:77%; height:34px; border-radius: 4px;border: 1px solid #ddd;font-size: 14px;font-weight: 400;" styleClass="form-control" tabindex="6" >
+                                                   <apex:actionSupport event="onchange" reRender="outidelivery"/>
+                                                </apex:input>
+                                             </div>
+                                             <apex:outputPanel id="outidelivery">
+                                               
+                                                <apex:outputText value="Invalid Country Code !" rendered="{!if(!BEGINS(countycoded,'+'),true,if(AND(!ISNUMBER(countycoded),LEN(countycoded)>0 ) ,true,false))}" styleClass="error-msg-output" />
+                                                <apex:outputText value="Invalid Telephone Number !" rendered="{!if(AND(!ISNUMBER(dtelephone),LEN(dtelephone)>0) ,true,false)}" styleClass="error-msg-output" style="margin-left:120px;" ></apex:outputText>
+                                             </apex:outputPanel>
+                                          </div>
+                                           <div class="form-group col-md-3">
+                                             <label for="">Mobile Number<span class="req-mark">*</span></label>
+                                             <div class="input-group col-md-12">
+                                                <apex:input type="text" value="{!countycodedmobile}"  id="txt29" styleClass="form-control" style="width:23%; height:35px; border-radius: 4px;border: 1px solid #ddd;font-size: 14px; padding: 0 12px; font-weight: 400;"   html-placeholder="+00" tabindex="7">
+                                                   <apex:actionSupport event="onchange" reRender="outidel"/>
+                                                </apex:input>
+                                                <apex:input type="text" value="{!dmobilenumber}" html-placeholder="Mobile Number" style=" padding: 6px 12px!important;width:77%; height:34px; border-radius: 4px;border: 1px solid #ddd;font-size: 14px;font-weight: 400;" styleClass="form-control" tabindex="8" >
+                                                   <apex:actionSupport event="onchange" reRender="outidel"/>
+                                                </apex:input>
+                                             </div>
+                                             <apex:outputPanel id="outidel">
+                                               
+                                                <apex:outputText value="Invalid Country Code !" rendered="{!if(!BEGINS(countycodedmobile,'+'),true,if(AND(!ISNUMBER(countycodedmobile),LEN(countycodedmobile)>0 ) ,true,false))}" styleClass="error-msg-output" />
+                                                <apex:outputText value="Invalid Mobile Number !" rendered="{!if(AND(!ISNUMBER(dmobilenumber),LEN(dmobilenumber)>0) ,true,if(AND(LEN(dmobilenumber)>10,LEN(dmobilenumber)>0),true,false))}" styleClass="error-msg-output" style="margin-left:120px;" ></apex:outputText>
+                                             </apex:outputPanel>
+                                          </div>
+                                         
+                                          <div class="form-group col-md-3">
+                                             <label for="">Address Line 1<span class="req-mark">*</span></label>
+                                             <apex:input type="text" value="{!daddressline1}" html-placeholder="Address Line 1" styleClass="form-control" tabindex="9"/>
+                                          </div>
+                                           <div class="form-group col-md-3">
+                                             <label for="">Address Line 2</label>
+                                             <apex:input type="text" value="{!daddressline2}" html-placeholder="Address Line 2" styleClass="form-control" tabindex="10"/>
+                                          </div>
+                                       </div>
+                                       <div class="form-row">
+                                          <div class="form-group col-md-3">
+                                             <label for="">City<span class="req-mark">*</span></label>
+                                             <apex:input type="text" value="{!dcity}" html-placeholder="City"  styleClass="form-control" tabindex="11" />
+                                          </div>
+                                          <div class="form-group col-md-3">
+                                             <label for="">County / State<span class="req-mark">*</span></label>
+                                             <apex:input type="text" value="{!dstate}" html-placeholder="County / State"  styleClass="form-control" tabindex="12" />
+                                          </div>
+                                          <div class="form-group col-md-2">
+                                             <label for="">Country<span class="req-mark">*</span></label>
+                                             <apex:input type="text"  value="{!dcountry}" html-placeholder="Country" styleClass="form-control" tabindex="13" >
+                                                <apex:actionSupport event="onchange" reRender="countryidel"/>
+                                             </apex:input>
+                                             <apex:outputPanel id="countryidel">
+                                                <apex:outputText value="Enter Correct Country Name !" rendered="{!if(AND(ISNUMBER(dcountry)),true,false)}" styleClass="error-msg-output" ></apex:outputText>
+                                             </apex:outputPanel>
+                                          </div>
+                                          <div class="form-group col-md-2">
+                                             <label for="">Postcode / Zipcode<span class="req-mark">*</span></label>
+                                             <apex:input type="text" value="{!dzip}" html-placeholder="Postcode / Zipcode" styleClass="form-control" tabindex="14" />
+                                            
+                                          </div>
+                                          <div class="form-group col-md-2">
+                                             <label for="">Opening Hours<span class="req-mark">*</span></label>
+                                             <apex:input type="time" value="{!myTime}" html-placeholder="Opening Hours" styleClass="form-control" tabindex="15"/>
+                                          </div>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </apex:outputPanel>
+                              <!-----------------------Delivery Address close----------------------->
+                              <!-----------------------------Prouct Info---------------------------->
+                              <apex:outputPanel rendered="{!tabIndex==3}">
+                                   <div class="title-grid" style="text-align:center;">
+                                      <apex:outputText styleClass="step"/>
+                                      <apex:outputText styleClass="step"/>
+                                      <apex:outputText styleClass="step1"/>
+                                     </div>     
+                                 <apex:inputhidden id="quant2" value="{!wquant2}" />
+                                 <apex:inputhidden id="wrInId" value="{!wrapIndex}" />
+                                 <div  id="CustomerTabprdtinfo">
+                                    <h5>Product Info</h5>
+                                    <div class="row">
+                                       <div class="form-group">
+                                          <script>
+                                             function changequantity(k,quant){
+                                                 
+                                                // alert('k=='+k);
+                                                 try{
+                                                 document.getElementById('{!$Component.wrInId}').value=k;
+                                                 document.getElementById('{!$Component.quant2}').value=quant;
+                                                 }catch(e){
+                                                     alert(e);
+                                                 }
+                                             }
+                                          </script>
+                                          <apex:outputPanel id="ProdTabId" >
+
+                                             <div class="col-md-12" style="overflow-x:auto;">
+                                                <table class="table table-bordered case-summary-table" id="ProductAddTable" >
+                                                   <tr style="background: #eee; text-align: left; color#333;  font-weight: bold;">
+                                                      <td>&nbsp;</td>
+                                                      <td class="col-md-2 col-sm-2">Product Family<span class="req-mark">*</span></td>
+                                                      <td class="col-md-2 col-sm-2">Product Type</td>
+                                                      <td>Purchase Date and Time<span class="req-mark">*</span></td>
+                                                      <td>Installation Date and Time<span class="req-mark">*</span></td>
+                                                      <td>Fault Pictures</td>
+                                                   </tr>
+                                                   <tbody>
+                                                      <apex:variable var="count" value="{!0}"   />
+                                                      <apex:repeat value="{!allProductList}" var="apList" id="TABLIST">
+                                                         <tr>
+                                                            <td>
+                                                               <apex:inputCheckbox id="myCheck"  style="margin: 11px 0px 0px 15px;">
+                                                                  <apex:actionSupport reRender="none" event="onclick" action="{!checkFunction}">
+                                                                     <apex:param name="checkboxcheck" value="{!count}"/>
+                                                                  </apex:actionSupport>
+                                                               </apex:inputCheckbox>
+                                                            </td>
+                                                            <td>
+                                                               <apex:selectList value="{!apList.selectedproductFamily}" size="1" multiselect="false" styleClass="form-control" id="hav7"  >
+                                                                  <apex:selectOptions value="{!apList.productFamily}"  >
+                                                                  </apex:selectOptions>
+                                                                  <apex:actionSupport event="onchange" action="{!WrapProductlist}" reRender="i12">
+                                                                     <apex:param name="windex" value="{!count}" assignTo="{!wrapIndex}"/>
+                                                                  </apex:actionSupport>
+                                                               </apex:selectList>
+                                                            </td>
+                                                            <td>
+                                                               <apex:outputPanel id="i12">
+                                                                  <apex:selectList value="{!apList.selectedProd}" size="1" multiselect="false" styleClass="form-control">
+                                                                     <apex:selectOptions id="oppid" value="{!apList.product}"  />
+                                                                  </apex:selectList>
+                                                               </apex:outputPanel>
+                                                            </td>
+                                                            <td>
+                                                            
+                                                               <apex:input type="datetime-local" styleClass="form-control" value="{!apList.productInfodate1 }" >
+                                                                <apex:actionSupport event="onchange" rerender="p1date,p2date"/>
+                                                                 </apex:input>
+                                                                  <apex:outputPanel id="p1date">
+                                                                     <apex:outputText value="Invalid Date / Time!" rendered="{!AND(apList.productInfodate1!=null,apList.productInfodate2!=null,OR(apList.productInfodate1> Now(),apList.productInfodate2<apList.productInfodate1))}" styleClass="tbl-error-msg-output"/>
+                                                                 </apex:outputPanel>
+                                                            </td>
+                                                            <td>
+                                                               <apex:input type="datetime-local" styleClass="form-control" value="{!apList.productInfodate2 }" >
+                                                                 <apex:actionSupport event="onchange" rerender="p2date,p1date"/>
+                                                         </apex:input>
+                                                         <apex:outputPanel id="p2date" >
+                                                             <apex:outputText value="Invalid Date / Time!" rendered="{!AND(apList.productInfodate1!=null,apList.productInfodate2!=null,OR(apList.productInfodate2 <Now(),apList.productInfodate2<apList.productInfodate1))}" styleClass="tbl-error-msg-output"/>
+                                                         </apex:outputPanel>
+                                                            </td>
+                                                            <td style="text-align:center">
+                                                               <!--new file upload button-->
+                                                               <button type="button" class="btn-labeled file" onclick="file_upload()">
+                                                               <span class="btn-label file-icon"><i class="fa fa-cloud-upload" style="font-size:15px; margin-right:10px;" aria-hidden="true"></i></span></button>                                   
+                                                               <apex:outputText value="{!Filename}"/>
+                                                               <!--new file upload button Close-->
+                                                               <!-- <input type="file"  class="form-control" style="margin-right: 80px;" /> -->
+                                                            </td>
+                                                         </tr>
+                                                         <apex:variable value="{!count+1}" var="count"/>
+                                                      </apex:repeat>
+                                                      <apex:actionFunction action="{!myAttactmentmethod}" name="file_upload"/>
+                                                   </tbody>
+                                                </table>
+                                             </div>
+                                          </apex:outputPanel>
+                                          <div class="form-row form-group" style="float:right;">
+                                             <apex:outputPanel styleClass="cursor">
+                                                <div class="apex-button btn-info"><i class="fa fa fa-plus" aria-hidden="true" style="margin-right:5px;"></i>Add More </div>
+                                                <!--<i class="fa fa-plus-circle" style="font-size:25px;color:#0565cc; padding: 0px 10px 0px 0px;" title="Add Product"></i>-->
+                                                <apex:actionSupport event="onclick" action="{!addproductrow}" reRender="ProdTabId"/>
+                                             </apex:outputPanel>
+                                             <apex:outputPanel styleClass="cursor">
+                                                <div class="apex-button btn-danger"><i class="fa fa-trash" aria-hidden="true" style="margin-right:5px;"></i>Delete</div>
+                                                <!-- <i class="fa fa-times-circle" style="font-size:25px;color:#d81712; padding: 0px 10px 0px 0px;" title="Delete Product"></i>-->
+                                                <apex:actionSupport event="onclick" action="{!DelProductRow}" reRender="ProdTabId"/>
+                                             </apex:outputPanel>
+                                          </div>
+                                       </div>
+                                       <div class="form-group col-md-12">
+                                          <label for="">Fault Description</label>
+                                          <apex:inputTextarea value="{!description}" html-placeholder="Fault Description" styleClass="form-control" rows="5"/>
+                                       </div>
+                                    </div>
+                                 </div>
+                              </apex:outputPanel>
+                              <!-----------------------Prouct Info close--------------------------->
+                           </div>
+                           <div class="panel-footer" style="height: 50px; text-align:right;">
+                             
+                                 <apex:commandButton value="Previous" action="{!previous}" styleClass="action-button btn-info btn-width" rendered="{!OR(tabIndex==2,tabIndex==3)}"/>
+                                 <apex:commandButton value="Next" action="{!next}" styleClass="action-button btn-primary btn-width" rendered="{!OR(tabIndex==1,tabIndex==2)}" />
+                                 <apex:commandButton value="Submit" action="{!doSave}" styleClass="action-button btn-primary btn-width" rendered="{!tabIndex==3}" reRender="ProdTabId,ProdTabId1"/>
+                             
+                           </div>
+                        </div>
+                     </apex:outputPanel>
+                  </div>
+               </div>
+            </div>
+         </apex:outputPanel>
+         <!-- code for attachmnet start------->
+         <apex:outputPanel rendered="{!SHowpage==true}">
+            <c:head_include ></c:head_include>
+            <c:portal_Script ></c:portal_Script>
+            <apex:outputPanel styleClass="modal1" layout="block" rendered="true" id="panel3">
+               <div class="modal-div1">
+                  <!--navbar menu-->
+                  <section class="navbar-info">
+                     <div id="imageview-center">
+                        <nav class="navbar navbar-default navbar-me">
+                           <div class="container-fluid ">
+                              <!-- Brand and toggle get grouped for better mobile display -->
+                              <div class="navbar-header">
+                                 <a class="navbar-brand site-logo" href="#">
+                                    <apex:image url="{!URLFOR($Resource.img, 'img/logo.png')}"/>
+                                 </a>
+                              </div>
+                           </div>
+                        </nav>
+                     </div>
+                  </section>
+                  <apex:commandbutton value="Back" action="{!backmethod}" styleclass="action-button btn-info" style="font-size:20px;width:100%;height:20%"/>
+               </div>
+            </apex:outputPanel>
+            <apex:iframe src="/apex/DragDropToCloud__DragDropUploader?parent_id={!PageId}"  id="theIframe" rendered="{!showdragANDdrop==true}" height="630px"/>
+         </apex:outputPanel>
+         <!-- code for attachmnet stop------->
+         <!--#############################FOOTER SECTION################################--->
+         <section>
+            <c:portal_footer />
+            <a id="back2Top" href="#" title="Go to Top">&#10148;</a>
+         </section>
+         <!--#############################################################--->
+         <!-- end of navbar-->
+        
+      </body>
+      <apex:outputPanel id="modal1">
+         <!--#######################COMMENT SUBMIT MODAL##################################-->
+         <apex:outputPanel layout="block" rendered="{!showModal1=true}" styleClass="modal1">
+            <div id="comment-confirmation">
+               <div class="modal-dialog">
+                  <div class="modal-content custom-modal">
+                     <div class="modal-header">
+                        <apex:commandLink value="x" action="{!CLoseModal1_method}" reRender="modal1" styleClass="close" style="height:10px"/>
+                        <apex:image url="{!URLFOR($Resource.img, 'img/logo.png')}" styleclass="popup-logo" />
+                     </div>
+                     <div class="modal-body" style="text-align:center;">
+                        <apex:image url="{!$Resource.False}" height="40"/>
+                        <p style="font-size: 15px; text-align: center; margin-top:10px;">Your RMA Complaint has been Already Received.</p>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </apex:outputPanel>
+      </apex:outputPanel>
+   </apex:form>
+</apex:page>
+***************************************************Apex Controller*******************************************
+/*
+        Author: Krrish
+        Created Date: 04/12/2018
+        Created For: This apex class is implemented for Insert the records of Customer Details and Delivery Address from the portal on the Custom object "RMA".
+*/
+
+public class RMARequestController {
+
+    //variable declaration for customer details
+    public string cfname {
+        get;
+        set;
+    }
+    public string clname {
+        get;
+        set;
+    }
+    public string ccompany {
+        get;
+        set;
+    }
+    public string caddress {
+        get;
+        set;
+    }
+    public string ccity {
+        get;
+        set;
+    }
+    public string czip {
+        get;
+        set;
+    }
+    public string ccountry {
+        get;
+        set;
+    }
+    public string ctelephone {
+        get;
+        set;
+    }
+    public string cemailaddress {
+        get;
+        set;
+    }
+    public string cmobilephone {
+        get;
+        set;
+    }
+    public string cstreet {
+        get;
+        set;
+    }
+    public string cstate {
+        get;
+        set;
+    }
+    public time copnhrs {
+        get;
+        set;
+    }
+    public Time myTime {
+        get;
+        set;
+    }
+    public string countycodec {
+        get;
+        set;
+    }
+    public string errormessage {
+        get;
+        set;
+    }
+    public Integer tabIndex {
+        get;
+        set;
+    }
+    public boolean ShowProductmessage {
+        get;
+        set;
+    }
+    
+    public string currentid {
+        get;
+        set;
+    
+    }
+    
+    public string countycodecmobile{
+      get;
+      set;
+    
+    }
+     public string cmobilenumber{
+      get;
+      set;
+    
+    }
+     public string caddressline1{
+      get;
+      set;
+    
+    }
+     public string caddressline2{
+      get;
+      set;
+    
+    }
+// variable for progess bar
+public Integer BarStatus {
+        get;
+        set;
+    }
+
+    //variable declaration for Delivery Address
+    public string dfname {
+        get;
+        set;
+    }
+    public string dlname {
+        get;
+        set;
+    }
+    public string dcompany {
+        get;
+        set;
+    }
+    public string daddress {
+        get;
+        set;
+    }
+    public string dcity {
+        get;
+        set;
+    }
+    public string dzip {
+        get;
+        set;
+    }
+    public string dcountry {
+        get;
+        set;
+    }
+    public string dtelephone {
+        get;
+        set;
+    }
+    public string demailaddress {
+        get;
+        set;
+    }
+    public string dmobilephone {
+        get;
+        set;
+    }
+    public string dstreet {
+        get;
+        set;
+    }
+    public string dstate {
+        get;
+        set;
+    }
+    public time delvopnhrs {
+        get;
+        set;
+    }
+    public string countycoded {
+        get;
+        set;
+    }
+    
+    
+    public string errormessaged {
+       get;
+       set;
+    }
+
+
+    public string countycodedmobile{
+       get;
+       set;
+    
+    }
+    
+    public string dmobilenumber{
+       get;
+       set;
+    }
+    
+    public string daddressline1{
+      get;
+      set;
+    }
+    public string daddressline2{
+        get;
+        set;
+    
+    }
+    //variable declaration for Prouct Info
+    public list < selectOption > selectProductList {
+        get;
+        set;
+    }
+    public string selectProduct {
+        get;
+        set;
+    }
+    public list < selectOption > selectProdList {
+        get;
+        set;
+    }
+    public string selectedProd {
+        get;
+        set;
+    }
+    public list < selectOption > ProductFamilyList {
+        get;
+        set;
+    }
+    public string ProductFamily {
+        get;
+        set;
+    }
+    public Integer wrapIndex {
+        get;
+        set;
+    }
+    public list < allProducts > allProductList {
+        get;
+        set;
+    }
+    public Integer wquant2 {
+        get;
+        set;
+    }
+    public string description {
+        get;
+        set;
+    }
+    public boolean showModal1 {
+        get;
+        set;
+    }
+    public Set < String > myprod;
+    public Set < String > myallProdList;
+    public integer showinteger {
+        get;
+        set;
+    }
+    public id currentRecordId {
+        get;
+        set;
+    }
+
+    //variables for attachmentb added by indresh
+    public string PageId {
+        get;
+        set;
+    }
+    public string Filename {
+        get;
+        set;
+    }
+    public boolean showdragANDdrop {
+        get;
+        set;
+    }
+    public boolean SHowpage {
+        get;
+        set;
+    }
+    //creating set for checkbox 
+    public Set < Integer > selectcheckbox;
+
+    // Constructor for initializing the memory for set of checkbox and Wrapper class.
+    public RMARequestController() {
+        BarStatus=0;
+        currentid = apexpages.currentpage().getparameters().get('id');
+        PageId = ApexPages.currentPage().getParameters().get('id');
+        SHowpage = false;
+        showdragANDdrop = false;
+        ShowProductmessage = false;
+        tabIndex = 1;
+        myTime = DateTime.now().time();
+        copnhrs = DateTime.now().time();
+        currentRecordId = ApexPages.CurrentPage().getparameters().get('id');
+        contact con = [select id, Name, RecordTypeId from contact where id =: currentRecordId];
+        Id DealerShowId = Schema.SObjectType.Contact.RecordTypeInfosByName.get('Customer').RecordTypeId;
+        // Id DealerShowId = Schema.SObjectType.Contact.RecordTypeInfosByName.get('Dealer').RecordTypeId;
+        if (con.RecordTypeId == DealerShowId) {
+            //system.debug('showinteger===' + showinteger);
+            showinteger = 1;
+        } else {
+            //system.debug('showinteger-------' + showinteger);
+            showinteger = 2;
+        }
+        //system.debug('showinteger+++++++++++++' + showinteger);
+        selectcheckbox = new Set < Integer > ();
+        allProductList = new list < allProducts > ();
+        addproductrow();
+
+    }
+
+    public PageReference doSave() {
+    
+    
+        set<boolean> s1 = new set<boolean>();
+         // To Match product from the database.
+        myallProdList = new Set < String > ();
+        myprod = new Set < String > ();
+       
+        for (allProducts allp: allProductList) {
+            
+                if (allp.selectedproductFamily != null && allp.selectedproductFamily != '') {
+                            myprod.add(allp.selectedProd);
+                }
+                else{
+                    
+                    s1.add(false);
+                    
+                }
+                system.debug('allp.productInfodate1==='+allp.productInfodate1);
+                system.debug('allp.productInfodate2==='+allp.productInfodate2);
+                
+                if(allp.productInfodate1!=null && allp.productInfodate2!=null && allp.productInfodate1 < allp.productInfodate2  && allp.productInfodate1<system.now()&& allp.productInfodate2>system.now()){
+                s1.add(true);
+                }
+                else{
+                s1.add(false);
+                }
+                
+               /* if( allp.productInfodate1!=null && allp.productInfodate2!=null && allp.productInfodate1 > allp.productInfodate2){
+                    s1.add(false);
+                    system.debug('s1==='+s1);
+                }else if (allp.productInfodate1==null || allp.productInfodate2==null){
+                s1.add(false);}*/
+        }
+             system.debug('s2==='+s1);
+        string conid = apexpages.currentpage().getparameters().get('id');
+        RMA__c rma = new RMA__c();
+        //Insertion of Customer details
+        rma.First_Name__c = cfname;
+        rma.Last_Name__c = clname;
+        rma.Contact__c = conid;
+        rma.Company__c = ccompany;
+        rma.Street__c = cstreet;
+        rma.State_County__c = cstate;
+        rma.city__c = ccity;
+        rma.ZIP__c = czip;
+        rma.Country__c = ccountry;
+        rma.Country_Code__c=countycodec;
+        rma.Telephone__c = ctelephone;
+        rma.Country_Codec_mob__c = countycodecmobile;
+        rma.Mobile_Numberc__c = cmobilenumber;
+        rma.Email__c = cemailaddress;
+        rma.Opening_Hour__c = copnhrs;
+        rma.Address_Linec_1__c = caddressline1;
+        rma.Address_Linec_2__c = caddressline2;
+
+        //Insertion of Delivery Address
+        rma.First_Named__c = dfname;
+        rma.Last_Named__c = dlname;
+        rma.Companyd__c = dcompany;
+        rma.Cityd__c = dcity;
+        rma.Streetd__c = dstreet;
+        rma.State_Countyd__c = dstate;
+        rma.ZIPd__c = dzip;
+        rma.Countryd__c = dcountry;
+        rma.Country_Coded__c=countycoded;
+        rma.Telephoned__c = dtelephone;
+        rma.Country_Coded_mob__c = countycodedmobile;
+        rma.Mobile_Numberd__c = dmobilenumber;
+        rma.Emaild__c = demailaddress;
+        rma.Opening_Hourd__c = myTime;
+        rma.Address_Lined_1__c = daddressline1;
+        rma.Address_Lined_2__c = daddressline2;
+
+       
+
+        // Validating the existing customer address and its product info form the database.
+        for (RMA__c allrmaList: [select id, (select id, Product__r.Name from RMA_Products__r), city__c, Country__c, Zip__c from RMA__c where city__c =: ccity AND Country__c =: ccountry AND Zip__c =: czip]) {
+
+            system.debug('first for loop');
+            for (RMA_Product__c dpr: allrmaList.RMA_Products__r) {
+                //system.debug('=====dpr.Product__r.Name======' + dpr.Product__r.Name);
+                myallProdList.add(dpr.Product__r.Name);
+
+            }
+        }
+      
+
+
+        if (myprod.size() > 0 && myallProdList.size() > 0 && myprod.containsAll(myallProdList)) {
+
+            //system.debug('=========if method called======');
+            ShowModal1_method();
+        } else {
+            
+            if(!s1.contains(false)){
+                  insert rma;
+                  system.debug('insert rma=======');
+            }
+          
+           
+            List < RMA_Product__c > rmaprd = new List < RMA_Product__c > ();
+            for (allProducts allp: allProductList) {
+            
+                if (allp.selectedproductFamily != null && allp.selectedproductFamily != '') {
+                
+                if( allp.productInfodate1!=null && allp.productInfodate2!=null && allp.productInfodate1 < allp.productInfodate2 && allp.productInfodate1<system.now()&& allp.productInfodate2>system.now()){
+                
+                    for (Product2 p2: [select id, Name, Family, Active__c from Product2 where Name =: allp.selectedProd]) {
+                        RMA_Product__c rmaProd = new RMA_Product__c();
+                        rmaProd.Product_Family__c = allp.selectedproductFamily;
+                        rmaProd.Product__c = p2.id;
+                        rmaProd.Purchase_Date__c = allp.productInfodate1;
+                        rmaProd.Installation_Date__c = allp.productInfodate2;
+                        rmaProd.Fault_Description__c = description;
+                        rmaProd.RMA__c = rma.id;
+                        rmaprd.add(rmaProd);
+                      }
+                   } 
+                   
+                   else{
+                    system.debug('Invalid Purchase date======');
+                    ApexPages.addmessage(new ApexPages.message(ApexPages.severity.WARNING, 'Invalid Purchase Date:'));
+                    return null;
+                   
+                   }
+                } else {
+                    system.debug('select product family else===');
+                    ShowProductmessage = true;
+                    ApexPages.addmessage(new ApexPages.message(ApexPages.severity.WARNING, 'Please Select Product Family:'));
+                    return null;
+                }
+            }
+            if (rmaprd.size() > 0) {
+                insert rmaprd;
+            }
+            PageReference pr = new PageReference('/apex/MyRMARequest?id=' + conid);
+            pr.setRedirect(true);
+            return pr;
+        }
+        return null;
+    }
+
+
+
+    // Added for populating the product family dynamically into the picklist.
+    public list < SelectOption > ProdFamilyList() {
+        ProductFamilyList = new List < selectOption > ();
+        ProductFamilyList.add(new SelectOption('', 'Please Select'));
+        Schema.DescribeFieldResult fieldResult3111 = Product2.Family.getDescribe();
+        List < Schema.PicklistEntry > cou3111 = fieldResult3111.getPicklistValues();
+        for (Schema.PicklistEntry f: cou3111) {
+            ProductFamilyList.add(new SelectOption(f.getLabel(), f.getValue()));
+        }
+        return ProductFamilyList;
+    }
+
+    //Use of Wrapper class
+    public class allProducts {
+
+        public list < selectOption > productFamily {
+            get;
+            set;
+        }
+        public list < selectOption > product {
+            get;
+            set;
+        }
+        public Integer quantity {
+            get;
+            set;
+        }
+        public String selectedproductFamily {
+            get;
+            set;
+        }
+        public String selectedProd {
+            get;
+            set;
+        }
+        public integer WrapperIndex {
+            get;
+            set;
+        }
+        public DateTime productInfodate1 {
+            get;
+            set;
+        }
+        public DateTime productInfodate2 {
+            get;
+            set;
+        }
+        
+        public string  proerrormsg{
+            get;
+            set;
+        }  
+        
+        
+        //Constructor of Wrapper class
+        public allProducts() {
+        
+            productInfodate1 = system.now()-1;
+            productInfodate2 = system.now()+1;
+           
+            
+
+        }
+
+    }
+
+
+
+    //this method populate the product info  on the basis of selected Product Family
+    public void WrapProductlist() {
+        string pp = apexpages.currentpage().getparameters().get('windex');
+        //system.debug('wrapIndex======' + wrapIndex);
+        allProductList[wrapIndex].product = getListProduct();
+
+    }
+
+    public void Wrapuantity() {
+        //system.debug('1==' + allProductList[wrapIndex].quantity);
+        allProductList[wrapIndex].quantity = wquant2;
+        //system.debug('2==' + allProductList[wrapIndex].quantity);
+    }
+    
+    //Adding the products info  into the list of selectOption 
+    Public list < SelectOption > getListProduct() {
+        selectProductList = new List < selectOption > ();
+        if (allProductList[wrapIndex].selectedproductFamily != '') {
+            //system.debug('productstrin family' + allProductList[wrapIndex].selectedproductFamily);
+            for (Product2 p2: [select id, Name, Family, Active__c from Product2 where Family =: allProductList[wrapIndex].selectedproductFamily and Active__c != False]) {
+                selectProductList.add(new SelectOption(p2.name, p2.name));
+
+            }
+        }
+        //system.debug('wrapper======' + myprod);
+        return selectProductList;
+    }
+    //Delete the product info row on click of cross Button
+    public void DelProductRow() {
+        Integer k = allProductList.size();
+        for (Integer i = k - 1; i > 0; i--) {
+            if (selectcheckbox.contains(i)) {
+                allProductList.remove(i);
+                selectcheckbox.remove(i);
+            }
+        }
+        //system.debug('===allProductList==' + allProductList);
+    }
+    //Added the selected checkbox into the list of integer 
+    public void checkFunction() {
+        string pp = apexpages.currentpage().getparameters().get('checkboxcheck');
+        selectcheckbox.add(Integer.valueof(pp));
+    }
+
+
+    // Method for addProduct Info row for RMA Request  
+    public void addproductrow() {
+        //system.debug('=========add product row=====');
+        allProducts ap = new allProducts();
+        ap.productFamily = ProdFamilyList();
+        allProductList.add(ap);
+    }
+
+    public PageReference RedirectRMA() {
+
+        String idd = ApexPages.currentPage().getParameters().get('id');
+        PageReference pr = new PageReference('/apex/MyRMARequest?id=' + idd);
+        pr.setRedirect(True);
+        return pr;
+    }
+
+    // Added method to show the pop up when duplicate DOA inserted i.e. Product Info
+    public void ShowModal1_method() {
+        //system.debug('=======methodcalled==========');
+        showModal1 = true;
+    }
+    // Hide the Pop up on click cross icon
+    public void CLoseModal1_method() {
+        showModal1 = false;
+    }
+
+
+    public void checkEmail() {
+        //system.debug('===cemailaddress====' + cemailaddress);
+        if (!Pattern.matches('^[a-zA-Z0-9._|\\\\%#~`=?&/$^*!}{+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$', cemailaddress)) {
+            errormessage = 'Check your email';
+        } else {
+            errormessage = '';
+        }
+    }
+
+
+    public void checkEmailDelivery() {
+        //system.debug('===demailaddress====' + demailaddress);
+        if (!Pattern.matches('^[a-zA-Z0-9._|\\\\%#~`=?&/$^*!}{+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4}$', demailaddress)) {
+
+            errormessaged = 'Check your email';
+        } else {
+            errormessaged = '';
+        }
+    }
+
+    public void next() {
+    
+        if (clname != null && clname !='' && ccompany != null && ccompany != '' && cemailaddress != null && cemailaddress != ''&& errormessage =='' && !countycodecmobile.contains('.') && countycodecmobile!=null && countycodecmobile!='' && countycodecmobile.startsWith('+') && countycodecmobile.substringAfter('+').isNumeric() && cmobilenumber.isNumeric() && cmobilenumber.length() <= 10 && !cmobilenumber.contains('.')  && caddressline1 !=null && caddressline1!= '' && ccity != null && ccity != '' && cstate != null && cstate != '' &&  ccountry != null && ccountry != '' && !ccountry.isNumeric() && czip != null && czip != '' && copnhrs!=null && tabIndex == 1 && ((countycodec=='' || countycodec==NULL) || (countycodec!=NULL && countycodec.startsWith('+') && countycodec.substringAfter('+').isNumeric() && !countycodec.contains('.'))) && ((ctelephone=='' || ctelephone==NULL) || (ctelephone!=NULL && ctelephone.isNumeric() && !ctelephone.contains('.')))) {
+            tabIndex = tabIndex + 1;
+          
+            system.debug('customer=====');
+        } else if (dlname != null && dlname != '' && dcompany != null && dcompany != '' && demailaddress != null && demailaddress != '' && errormessaged ==''   && !countycodedmobile.contains('.') && countycodedmobile!=null && countycodedmobile!='' && countycodedmobile.startsWith('+') && countycodedmobile.substringAfter('+').isNumeric() && dmobilenumber.isNumeric() && !dmobilenumber.contains('.') && dmobilenumber.length() <= 10 && daddressline1!=null && daddressline1!=''  && dcity != null && dcity != '' && dstate != null && dstate != '' && !dcountry.isNumeric()  && dcountry != null && dcountry != '' && dzip != null && dzip != ''  && tabIndex == 2 && myTime!=null && ((countycoded=='' || countycoded==NULL) || (countycoded!=NULL && countycoded.startsWith('+') && countycoded.substringAfter('+').isNumeric() && !countycoded.contains('.') )) && ((dtelephone=='' || dtelephone==NULL) || (dtelephone!=NULL && dtelephone.isNumeric() && !dtelephone.contains('.')))) {
+            tabIndex = tabIndex + 1;
+         
+            system.debug('delivery======='+BarStatus);
+        } else {
+            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.WARNING, 'Please fill required fields:'));
+        }
+       
+    }
+
+    public void previous() {
+        tabIndex = tabIndex - 1;
+    }
+
+    // method to show attachment block  added by indresh
+    public PageReference myAttactmentmethod() {
+        showdragANDdrop = true;
+        SHowpage = true;
+        return null;
+    }
+    //method to back on main page from attachment block added by indresh
+    public void backmethod() {
+        String currentid = ApexPages.currentpage().getParameters().get('id');
+        DragDropToCloud__Cloud_Documents__c cc = new DragDropToCloud__Cloud_Documents__c();
+        cc = [select id, name from DragDropToCloud__Cloud_Documents__c where DragDropToCloud__Contact__c =: currentid order by createddate desc limit 1];
+        Filename = cc.name;
+        showdragANDdrop = false;
+        SHowpage = false;
+    }
+
+}
