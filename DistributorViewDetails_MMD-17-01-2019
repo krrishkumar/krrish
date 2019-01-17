@@ -1,0 +1,1086 @@
+<!-------------------------------------------
+   Author: Anita
+   Created Date:14/11/2018
+   Created For: This visualforce page is implemented for showing data of case and product related to User on portal on "Case" object. User can send any attachment through portal.
+                
+   --------------------------------------------->
+<apex:page standardStylesheets="false" showHeader="false" sidebar="false" docType="html-5.0" controller="DistributorViewDetailsCntrl_Clone">
+   <c:head_include ></c:head_include>
+   <c:portal_Script ></c:portal_Script>
+   <meta name="viewport" content="width=device-width" />
+   <style>
+      @media all and (min-width: 960px) {
+      body{
+      font-size: 14px;
+      }
+      }
+      @media all and (max-width: 959px) and (min-width: 600px) {
+      body{
+      font-size: 15px;
+      }
+      .site-logo {
+      padding: 0px 31px !important;
+      margin: 0px 0px;
+      }
+      }
+      @media all and (max-width: 599px) and (min-width: 320px) {
+      body{
+      font-size: 17px;
+      }
+      .site-logo {
+      padding: 0px 14px !important;
+      margin: 0px 0px;
+      }
+      }
+      #caseview-center{
+      background-image: url('{!URLFOR($Resource.img, '/img/backgrounds/case_log.jpg')}');
+      height:200px; 
+      min-height:250px; 
+      width:100%; 
+      margin:0; 
+      padding:0;     
+      background-size: cover;
+      }
+      .comment-window{
+      background-image: url('{!URLFOR($Resource.img, '/img/backgrounds/bg-white.png')}'); 
+      background-color: #f5f5f5c4; 
+      }
+      .comment-panel-body{
+      padding:10px;
+      }
+      .panel .slidedown .glyphicon, .chat .glyphicon
+      {
+      margin-right: 5px;
+      }
+      .custom-modal{
+        border-radius: 0;
+        text-align: center;
+        border-radius: 0;
+        text-align: center;
+        width: 310px;
+        margin: 0 auto;
+        border: 2px solid #0067a4;
+      }
+      .custom-modal-title{
+      font-size:19px;
+      color:#369ce6;
+      }
+      .action-button a{
+      line-height:19px !important;
+      }
+      .comment-input{
+      height: 34px !important;
+      margin: 0;
+      padding: 0 12px !important;
+      vertical-align: middle;
+      background: #ffffff5e;
+      border: 1px solid #ddd;
+      font-family: "Lato", "Helvetica Neue", arial, helvetica, sans-serif;
+      font-size: 14px!important;
+      font-weight: 400;
+      line-height: 40px;
+      color: #888;
+      -moz-border-radius: 4px;
+      -webkit-border-radius: 4px;
+      border-radius: 4px;
+      -moz-box-shadow: none;
+      -webkit-box-shadow: none;
+      box-shadow: none;
+      -o-transition: all .3s;
+      -moz-transition: all .3s;
+      -webkit-transition: all .3s;
+      -ms-transition: all .3s;
+      transition: all .3s;
+      }
+      .panel-body-comment {
+      overflow-y: scroll;
+      height: 155px;
+      }
+      /* FILE INPUT */
+      .fileUpload {
+      position: relative;
+      overflow: hidden;
+      margin: 10px;
+      cursor: pointer;
+      }
+      .fileUpload input.upload {
+      position: absolute;
+      top: 0;
+      right: 0;
+      margin: 0;
+      padding: 0;
+      font-size: 20px;
+      cursor: pointer;
+      opacity: 0;
+      filter: alpha(opacity=0);
+      width:50px;
+      }
+      .welcome-user{
+      background: none;
+      border: none;
+      font-size: 14px;
+      }
+      .url-cursor {
+      cursor: pointer;
+      font-size: 14px;
+      }
+      .popup-logo{
+      width:120px;
+      }
+      .tex-center{
+      text-align:center;
+      }
+      .case-summary-table{
+      font-size:13px;
+      }
+      .left{
+      text-align:left;
+      }
+      .right{
+      text-align:right;
+      }
+      .center{
+      text-align:center;
+      }
+      .apex-button{
+      height: 28px; 
+      width: 130px;  
+      margin: 0;  
+      padding: 5px 0px;
+      vertical-align: middle;  
+      border: 0;  
+      font-size: 13px;  
+      font-weight: 400;  
+      line-height: 18px;  
+      float: right; 
+      margin: 0px 10px 0px 0px;
+      text-align:center;
+      border-radius:3px;
+      cursor: pointer;
+      }
+      blockquote {
+      font-size: 14px !important;
+      border-left: none !important;
+      }
+      /* The Modal (background) */
+      .modal1 {          
+      position: fixed; /* Stay in place */
+      z-index: 99999; /* Sit on top */
+      padding-top: 80px; /* Location of the box */
+      left: 0px;
+      top: 0;
+      width: 100%; /* Full width */
+      height: 100%; /* Full height */
+      overflow: auto;/* Enable scroll if needed */
+      background-color: rgb(0,0,0); /* Fallback color */
+      background-color: rgba(0,0,0,0.52); /* Black w/ opacity */
+      }
+      /* STYLE ADDED BY INDRESH FOR FILE UPLOAD PAGE CUSTOME MODAL */
+
+      /* Modal Content */
+      .modal-content1 {
+      background-color: #fefefe;
+      border-radius: 10px;
+      padding: 10px;           
+      width: 99.4%;
+      height:100%;
+      color:#5b7075 !important;
+      }
+      #imageview-center{
+      background-image: url('{!URLFOR($Resource.DropAndDragImage)}'); 
+      height:200px; 
+      min-height:250px; 
+      width:100%; 
+      margin:0; 
+      padding:0;     
+      background-size: cover;
+      } 
+       .modal12 {          
+      position: fixed; /* Stay in place */
+      z-index: 150; /* Sit on top */
+      padding-top: 0px; /* Location of the box */
+      left: 0px;
+      top: 0;
+      width: 100%; /* Full width */
+      height: 58.6%; /* Full height */
+      overflow: auto;/* Enable scroll if needed */
+      background-color: rgb(0,0,0); /* Fallback color */
+      background-color: rgba(0,0,0,0.7); /* Black w/ opacity */
+      }
+      /* Outline div */
+      .modal-div1 {
+      background-color: #4195e2;
+      margin: auto;
+      padding: 0px;
+      top-margin:0;       
+      width: 100%;
+      height:100%;
+      }
+      /* Close icon */
+      .close1 {
+      color: #aeafaf;
+      float: right;
+      font-size: 15px;
+      font-weight: bold;
+      }
+      .file{
+      border: 1px solid #d0d0d0!important;
+      height: 34px!important;
+      border-radius: 3px!important;
+      text-align: left!important;
+      padding: 0!important;
+      background: none!important;
+      }
+      .file-icon{
+      background: #0796ea!important;
+      height: 34px!important!important;
+      padding: 8px 20px 8px 33px!important;
+      color:#fff!important;
+      margin-right: 10px!important;
+      }
+      .btn-width{
+          width: 120px;
+          margin: 4px;
+      }
+      .error-msg{
+                 color: red;
+                list-style-type: none;
+                padding: 0px 0 0 0;
+                font-size: 11px;
+                line-height: 8px;
+
+         }
+         .error-msg-output {
+             color: red;
+             list-style-type: none;
+             font-size: 11px;
+             position: absolute;
+         }
+         /*Modal Custimazation */
+         .modal-header {
+            border-bottom:none!important;
+         }
+         .modal-footer {
+            border-top:none!important;
+         }
+         .checkbox label, .radio label{
+            padding-left: 5px!important;
+         }
+         .modal-btn-submit{
+            width:100%;
+            background: linear-gradient(to bottom right,#003655 0,#0066a1 50%,#0096ee 100%);
+            
+         }
+         .modal-btn-cancle{
+            width:100%;
+            background:#fff!important;
+            border:1px solid #0067a4!important;
+            color:#0067a4!important;
+         }
+         
+   </style>
+   <!-- Begin Default Content REMOVE THIS -->
+   <apex:form >
+      <body>
+         <script>
+            function oneCheckbox(obj)
+            {
+            if (obj.checked)
+            {
+            var inputs = document.getElementsByTagName("input");
+            
+            for (var i = 0; i < inputs.length; i++)
+            {
+               var oInput = inputs[i];
+               if (oInput.type == "checkbox" && oInput.checked && oInput != obj)
+               {
+                   oInput.checked = false; 
+               }  
+            }
+            }
+            
+            }
+               $(window).scroll(function() {
+                   if($(this).scrollTop()>0) {
+                       $( ".navbar-me" ).addClass("fixed-me");
+                   } else {
+                       $( ".navbar-me" ).removeClass("fixed-me");
+                   }
+               });
+         </script>
+         <apex:outputPanel rendered="{!SHowpage==false}">
+            <!--navbar menu-->
+            <section class="navbar-info">
+               <div id="caseview-center">
+                  <c:DealerSideMenu ></c:DealerSideMenu>
+               </div>
+            </section>
+            <!---////////////////Side Button////////////////-->
+            <apex:outputPanel id="modal1">
+               <!--#######################COMMENT SUBMIT MODAL##################################-->
+               <apex:outputPanel rendered="{!showModal1=true}" layout="block" styleClass="modal1">
+                  <div id="comment-confirmation">
+                     <div class="modal-dialog">
+                        <div class="modal-content custom-modal">
+                           <div class="modal-header" style="height:50px;">
+                              <apex:commandLink value="x" action="{!CLoseModal1_method}" reRender="modal1" styleClass="close" style="height:10px"/>
+                              <!--<apex:image url="{!URLFOR($Resource.img, 'img/logo.png')}" />-->
+                              
+                           </div>
+                           <div class="modal-body" style="text-align:center;">
+                              <apex:image url="{!$Resource.true}" height="65"/>
+                              <p style="font-size: 15px; text-align: center; margin-top:15px;">Your comment has been received. Our Support Team will get back to you.</p>
+                           </div>
+                           <div class="modal-footer">
+                                
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </apex:outputPanel>
+               <!--#########################################################-->
+               <!--- model for closed case ------------->
+               <apex:outputPanel rendered="{!showModal2=true}" layout="block" styleClass="modal1">
+                  <div  id="CaseCloseconfirmation" role="dialog">
+                     <div class="modal-dialog" style="border: 2px solid #0067a4;">
+                        <div class="modal-content">
+                           <div class="modal-header">
+                              <apex:commandLink value="x" action="{!CLoseModal2_method}" reRender="modal1" styleClass="close" style="height:10px"/>
+                              <h3 style="color:#0067a4; text-align:center;">Case Close By?</h3>
+                           </div>
+                           <div class="modal-body" style="text-align:left;">
+                              <div class="form" style="padding: 0px 0px 0px 40px;">
+                                 <div class="row">
+                                    <div class="col-md-6 col-sm-12">
+                                         <div class="checkbox checkbox-success">
+                                            <apex:inputcheckbox value="{!FqClose}" onchange="oneCheckbox(this);"/>
+                                            <label for="faqClose">
+                                            Closed with the help of FAQ.
+                                            </label>
+                                         </div>
+                                     </div>
+                                     <div class="col-md-6 col-sm-12">
+                                         <div class="checkbox checkbox-success">
+                                            <apex:inputcheckbox value="{!sClose}" onchange="oneCheckbox(this);"/>
+                                            <label for="supportClose">
+                                            Closed with the Support help.
+                                            </label>
+                                         </div>
+                                    </div>
+                                 </div>
+                              </div>
+                           </div>
+                           <div class="modal-footer">
+                           <apex:commandButton value="Cancel" action="{!CLoseModal2_method}"  styleclass="action-button modal-btn-cancle btn-width"/>
+                              <apex:commandButton value="Submit" action="{!fCaseClosemethod}"  styleclass="action-button modal-btn-submit btn-width"/>
+                           </div>
+                        </div>
+                     </div>
+                  </div>
+               </apex:outputPanel>
+               <!--#########################################################-->
+            </apex:outputPanel>
+            <!---////////////////Side Button////////////////-->
+            <div id="main">
+               <div style="width:90%; margin:0 auto;">
+                  <div class="row">
+                     <div class="title-grid">
+                        <h3>Support Request Details</h3>
+                        <p class="forgotten" style="text-align:right;">
+                           <span><apex:outputLink value="/apex/DistributorCaseRegister?id={!con.id}" styleClass="url-cursor"><span style="margin-right:5px;"><i class="fa fa-file-text-o"></i></span> Create New Support Requests </apex:outputLink></span>
+                           </p>
+                     </div>
+                  </div>
+                  <div class="row" >
+                     <div id="case-title">
+                        <h5>Case Number : {!caseView.CaseNumber}</h5>
+                     </div>
+                     <!--Case Details Table-->
+                     
+                     <div class="table-responsive" id="accordion">
+                        <table class="table table-bordered table-hover case-summary-table" id="caseViewId">
+                           <tbody>
+                           </tbody>
+                        </table>
+                     </div>
+                  </div>
+                  <div class="row">
+                     <!--//////////////////////////CASE Details View Start///////////////////--->
+                     <div class="table-responsive" id="accordion">
+                        <table id="example" class="display table table-bordered" cellspacing="0" style="width:100%;font-size:13px;">
+                           <tr>
+                              <th>Product Name</th>
+                              <td>{!caseView.Product__r.Name}</td>
+                              <th>Product Type</th>
+                              <td>{!caseView.Product_Family__c}</td>
+                              <th>Case Reason</th>
+                              <td>{!caseView.Type}</td>
+                              <th>New or Repeat</th>
+                              <td>{!caseView.Complaint_Type__c}</td>
+                              
+                           </tr>
+                           <tr>
+                              <th>Case Status</th>
+                              <td>{!caseView.Status}</td>
+                              <th>Model No.</th>
+                              <td>{!caseView.Model_Number__c}</td>
+                              <th>Invoice No.</th>
+                              <td>{!caseView.Bill_Number__c}</td>
+                              <th>Serial No.</th>
+                              <td>{!caseView.Serial_Number__c }</td>
+                           </tr>
+                           <tr>
+                              <th>Type of Case</th>
+                              <td>{!caseView.Reason}</td>
+                              <th>Purchase Date</th>
+                                <td>{!caseView.Purchase_Date_F__c}</td> 
+                             
+                              <th colspan="2">Extended Warranty Taken</th>
+                              <td colspan="2">{!caseView.Extended_Warranty_Taken__c}</td>
+                        </tr>
+                           <tr>
+                              
+                              <th>Extended Warranty Duration</th>
+                              <td>{!caseView.Extended_Warranty_Duration__c}</td>
+                              <th colspan="2">Do you have Team viewer</th>
+                              <td>{!caseView.If_customer_has_Team_viewer__c}</td>
+                              <th colspan="2">Preferred Contact Method</th>
+                              <td>{!caseView.GDPR__c}</td>
+                           </tr>
+                           <tr>
+                              <th>Case Title</th>
+                              <td colspan="7">{!caseView.Description}</td>
+                           </tr>
+                           <!--New show hide table row start added by krrish 16-01-2019 -->
+                           <apex:outputPanel rendered="{!forminformation.size!=null}">
+                        <apex:outputPanel rendered="{!caseView.Reason=='CMND'}">
+                            <tr>
+                                <td colspan="8">
+                                
+                                    <table id="example11" class="display table table-bordered" cellspacing="0" style="width:100%;font-size:13px;">
+                                         <tr>
+                                             <th>Firmware Version</th>
+                                              <td>{!forminformation[0].Firmware_version__c}</td>
+                                              <th>Scalar Version</th>
+                                              <td>{!forminformation[0].Scalar_version__c}</td>
+                                              <th>Version</th>
+                                              <td>{!forminformation[0].Version__c}</td>
+                                              <th>TeamViewer Id</th>
+                                              <td>{!forminformation[0].Teamviewer_ID__c}</td>
+                                              <th>TeamViewer Password</th>
+                                              <td>{!forminformation[0].Teamviewer_Password__c}</td>
+                                           </tr>
+                                           
+                                           
+                                           <tr>
+                                               <th>Description</th>
+                                               <td  colspan="9">{!forminformation[0].Description__c}</td>
+                                           
+                                           </tr>
+                                           
+                                        </table>
+                                
+                                </td>
+                            </tr>
+                          </apex:outputPanel>
+                          
+                           <apex:outputPanel rendered="{!caseView.Reason=='Inquiry'}">
+                            <tr>
+                                <td colspan="8">
+                                
+                                    <table id="example12" class="display table table-bordered" cellspacing="0" style="width:100%;font-size:13px;">
+                                         <tr>
+                                             <th>NDA Established</th>
+                                              <td>{!forminformation[0].NDA_established__c}</td>
+                                              <th>Description</th>
+                                              <td>{!forminformation[0].Description__c}</td>
+                                           </tr>
+                                       
+                                        </table>
+                                
+                                </td>
+                            </tr>
+                          </apex:outputPanel>
+                          
+                            <apex:outputPanel rendered="{!caseView.Reason=='Issue'}">
+                            <tr>
+                                <td colspan="8">
+                                
+                                    <table id="example13" class="display table table-bordered" cellspacing="0" style="width:100%;font-size:13px;">
+                                         <tr>
+                                             <th>Location</th>
+                                              <td>{!forminformation[0].Location__c}</td>
+                                              <th>Firmware Version</th>
+                                              <td>{!forminformation[0].Firmware_version__c}</td>
+                                              <th>Installation</th>
+                                              <td>{!forminformation[0].Installation__c}</td>
+                                              <th>System Description</th>
+                                              <td>{!forminformation[0].System_description__c}</td>
+                                              <th> Units Affected</th>
+                                              <td>{!forminformation[0].Units_affected__c}</td>
+                                              <th>Description</th>
+                                              <td>{!forminformation[0].Description__c}</td>
+                                           </tr>
+                                       
+                                        </table>
+                                
+                                </td>
+                            </tr>
+                          </apex:outputPanel>
+                          
+                    <apex:outputPanel rendered="{!caseView.Reason=='CDB'}">
+                            <tr>
+                                <td colspan="8">
+                                
+                                    <table id="example14" class="display table table-bordered" cellspacing="0" style="width:100%;font-size:13px;">
+                                         <tr>
+                                              <th>Firmware Version</th>
+                                              <td>{!forminformation[0].Firmware_version__c}</td>
+                                              <th>System Info</th>
+                                              <td>{!forminformation[0].System_Info__c}</td>
+                                              <th>Description</th>
+                                              <td>{!forminformation[0].Description__c}</td>
+                                           </tr>
+                                       
+                                        </table>
+                                
+                                </td>
+                            </tr>
+                          </apex:outputPanel>
+                          
+                         <apex:outputPanel rendered="{!caseView.Reason=='SXP'}">
+                            <tr>
+                                <td colspan="8">
+                                
+                                    <table id="example15" class="display table table-bordered" cellspacing="0" style="width:100%;font-size:13px;">
+                                         <tr>
+                                              <th>Firmware Version</th>
+                                              <td>{!forminformation[0].Firmware_version__c}</td>
+                                              <th>System Info</th>
+                                              <td>{!forminformation[0].System_Info__c}</td>
+                                              <th>NDA Established</th>
+                                              <td>{!forminformation[0].NDA_established__c}</td>
+                                              <th>Description</th>
+                                              <td>{!forminformation[0].Description__c}</td>
+                                           </tr>
+                                       
+                                        </table>
+                                
+                                </td>
+                            </tr>
+                          </apex:outputPanel>
+                          
+                           <apex:outputPanel rendered="{!caseView.Reason=='Vsecure'}">
+                            <tr>
+                                <td colspan="8">
+                                
+                                    <table id="example16" class="display table table-bordered" cellspacing="0" style="width:100%;font-size:13px;">
+                                         <tr>
+                                              <th>Firmware Version</th>
+                                              <td>{!forminformation[0].Firmware_version__c}</td>
+                                              <th>System</th>
+                                              <td>{!forminformation[0].System__c}</td>
+                                              <th>CAM Card Version</th>
+                                              <td>{!forminformation[0].CAM_card_version__c}</td>
+                                              <th>Description</th>
+                                              <td>{!forminformation[0].Description__c}</td>
+                                           </tr>
+                                       
+                                        </table>
+                                
+                                </td>
+                            </tr>
+                          </apex:outputPanel>
+                          
+                          <apex:outputPanel rendered="{!caseView.Reason=='Calibration'}">
+                            <tr>
+                                <td colspan="8">
+                                
+                                    <table id="example17" class="display table table-bordered" cellspacing="0" style="width:100%;font-size:13px;">
+                                         <tr>
+                                              <th>Software Version</th>
+                                              <td>{!forminformation[0].Software_version__c}</td>
+                                              <th>Cabling Structure</th>
+                                              <td>{!forminformation[0].Cabling_structure__c}</td>
+                                              <th>Tool</th>
+                                              <td>{!forminformation[0].Tool__c}</td>
+                                              <th>Description</th>
+                                              <td>{!forminformation[0].Description__c}</td>
+                                           </tr>
+                                       
+                                        </table>
+                                
+                                </td>
+                            </tr>
+                          </apex:outputPanel>
+                           <apex:outputPanel rendered="{!caseView.Reason=='Project Support'}">
+                            <tr>
+                                <td colspan="8">
+                                
+                                    <table id="example18" class="display table table-bordered" cellspacing="0" style="width:100%;font-size:13px;">
+                                         <tr>
+                                              <th>Contact Name</th>
+                                              <td>{!forminformation[0].Contact_Name__c}</td>
+                                              <th>Contact Phone</th>
+                                              <td>{!forminformation[0].Contact_Phone__c}</td>
+                                              <th>Location</th>
+                                              <td>{!forminformation[0].Location__c}</td>
+                                              <th>Project Description</th>
+                                              <td>{!forminformation[0].Project_description__c}</td>
+                                           </tr>
+                                       
+                                        </table>
+                                
+                                </td>
+                            </tr>
+                          </apex:outputPanel>
+                          
+                          
+                           <apex:outputPanel rendered="{!caseView.Reason=='App Signing'}">
+                            <tr>
+                                <td colspan="8">
+                                
+                                    <table id="example19" class="display table table-bordered" cellspacing="0" style="width:100%;font-size:13px;">
+                                         <tr>
+                                              <th>App Version</th>
+                                              <td>{!forminformation[0].App_Version__c}</td>
+                                              <th>Description</th>
+                                              <td>{!forminformation[0].Description__c}</td>
+                                             
+                                           </tr>
+                                       
+                                        </table>
+                                
+                                </td>
+                            </tr>
+                          </apex:outputPanel>
+                          
+                          <apex:outputPanel rendered="{!caseView.Reason=='CRD50'}">
+                            <tr>
+                                <td colspan="8">
+                                
+                                    <table id="example20" class="display table table-bordered" cellspacing="0" style="width:100%;font-size:13px;">
+                                         <tr>
+                                              <th>Monitor Type</th>
+                                              <td>{!forminformation[0].Monitor_type__c}</td>
+                                              <th>Monitor Firmware</th>
+                                              <td>{!forminformation[0].Monitor_Firmware__c}</td>
+                                              <th>Scalar Firmware</th>
+                                              <td>{!forminformation[0].Scalar_firmware__c}</td>
+                                              <th>Description</th>
+                                              <td>{!forminformation[0].Description__c}</td>
+                                           </tr>
+                                       
+                                        </table>
+                                
+                                </td>
+                            </tr>
+                          </apex:outputPanel>
+                          
+                           <apex:outputPanel rendered="{!caseView.Reason=='Remote Control'}">
+                            <tr>
+                                <td colspan="8">
+                                
+                                    <table id="example21" class="display table table-bordered" cellspacing="0" style="width:100%;font-size:13px;">
+                                         <tr>
+                                              <th>Device</th>
+                                              <td>{!forminformation[0].Device__c}</td>
+                                              <th>Description</th>
+                                              <td>{!forminformation[0].Description__c}</td>
+                                           </tr>
+                                       
+                                        </table>
+                                
+                                </td>
+                            </tr>
+                          </apex:outputPanel>
+                            <apex:outputPanel rendered="{!caseView.Reason=='CRD41'}">
+                            <tr>
+                                <td colspan="8">
+                                
+                                    <table id="example22" class="display table table-bordered" cellspacing="0" style="width:100%;font-size:13px;">
+                                         <tr>
+                                              <th>Device</th>
+                                              <td>{!forminformation[0].Device__c}</td>
+                                              <th>Description</th>
+                                              <td>{!forminformation[0].Description__c}</td>
+                                           </tr>
+                                       
+                                        </table>
+                                
+                                </td>
+                            </tr>
+                          </apex:outputPanel>
+                           <apex:outputPanel rendered="{!caseView.Reason=='MyChoice'}">
+                            <tr>
+                                <td colspan="8">
+                                
+                                    <table id="example23" class="display table table-bordered" cellspacing="0" style="width:100%;font-size:13px;">
+                                         <tr>
+                                              <th>Firmware version</th>
+                                              <td>{!forminformation[0].Firmware_version__c}</td>
+                                              <th>Description</th>
+                                              <td>{!forminformation[0].Description__c}</td>
+                                           </tr>
+                                       
+                                        </table>
+                                
+                                </td>
+                            </tr>
+                          </apex:outputPanel>
+                          </apex:outputPanel>
+                           <!--New show hide table row end -->
+                           <tr>
+                              <td colspan="8" style="text-align:right!important;">
+                                 <apex:outputPanel >
+                                    <div class="apex-button btn-danger " ><i class="fa fa-times" aria-hidden="true" style="margin-right:5px;"></i>Closed</div>
+                                    <apex:actionSupport event="onclick" action="{!ShowModal2_method}" reRender="modal1"/>
+                                 </apex:outputPanel>
+                                 <apex:outputPanel >
+                                    <div class="apex-button btn-info " ><i class="fa fa-commenting" aria-hidden="true" style="margin-right:5px;"></i>Comment</div>
+                                    <apex:actionSupport event="onclick" action="{!ShowHideComment}" reRender="commntid"/>
+                                 </apex:outputPanel>
+                                 
+                              </td>
+                           </tr>
+                           <!-- row for comment window start ---->
+                           <tr id="CommnetRow" class="comment-window">
+                              <td colspan="8" style="padding: 10px; border: none;" >
+                             <apex:outputPanel id="errmsg">
+                                <apex:messages style="color:red" styleClass="error-msg"/></apex:outputPanel>
+                                 <apex:outputPanel id="commntid">
+                                    <table style="display: {!IF(showComment==false, 'none', '')}; width:100%;"  cellspacing="0" >
+                                       <tr >
+                                          <td>
+                                             <div id="case-title">
+                                                <h5>
+                                                   Comments 
+                                                   <span style="float:right; text-align:right;">
+                                                      <apex:commandLink action="{!HideComment}">
+                                                         <i class="fa fa-times-circle" aria-hidden="true" title="close comment"></i>
+                                                      </apex:commandLink>
+                                                   </span>
+                                                </h5>
+                                             </div>
+                                             <div class="panel-body panel-body-comment" >
+                                                <apex:repeat value="{!CommentModalMethod}" var="commnt">
+                                                   <ul class="chat" id="caseViewId">
+                                                      <apex:outputPanel rendered="{!commnt.Comment_By__c=='Customer'}">
+                                                         <li class="right clearfix">
+                                                            <span class="chat-img pull-right customer-img-circle">
+                                                            <i class="fa fa-user customer-img-circle-icon" aria-hidden="true"></i>
+                                                            </span>
+                                                            <div class="chat-body clearfix">
+                                                               <div class="header">
+                                                                  <span style="float:left;">
+                                                                     <small class="text-muted">
+                                                                        <span class="glyphicon glyphicon-time"></span>
+                                                                        <apex:outputText value="{0,date,MM/dd/yyyy HH:mm:ss a}">
+                                                                           <apex:param value="{!commnt.CreatedDate}" />
+                                                                        </apex:outputText>
+                                                                     </small>
+                                                                  </span>
+                                                                  &nbsp;<strong class="pull-right primary-font">{!con.name}</strong>
+                                                               </div>
+                                                            </div>
+                                                            <p id="commentid2" style="float:left;">{!commnt.Comment__c}</p>
+                                                         </li>
+                                                      </apex:outputPanel>
+                                                      <apex:outputPanel rendered="{!commnt.Comment_By__c=='Support'}">
+                                                         <li class="left clearfix">
+                                                            <span class="chat-img pull-left support-img-circle">
+                                                            <i class="fa fa-comments support-img-circle-icon" aria-hidden="true"></i>
+                                                            </span>
+                                                            <div class="chat-body clearfix">
+                                                               <div class="header">
+                                                                  <strong class="primary-font">{!commnt.CreatedBy.Name}</strong>
+                                                                  <small class="pull-right text-muted">
+                                                                     <span class="glyphicon glyphicon-time"></span>
+                                                                     <apex:outputText value="{0,date,MM/dd/yyyy HH:mm:ss a}">
+                                                                        <apex:param value="{!commnt.CreatedDate}" />
+                                                                     </apex:outputText>
+                                                                  </small>
+                                                               </div>
+                                                               <p id="">{!commnt.Comment__c}</p>
+                                                            </div>
+                                                         </li>
+                                                      </apex:outputPanel>
+                                                   </ul>
+                                                </apex:repeat>
+                                             </div>
+                                             <div class="input-group" style="width:100%; margin-top: 5px;">
+                                                <apex:inputText value="{!NewComment}" html-placeholder="Type your comment here..." styleClass="form-control comment-input" style="height: 34px;"/>
+                                                <span class="input-group-btn fileUpload comment-button btn-primary" style="width:50px; text-align:center;  cursor: pointer;" onclick="file_upload()">
+                                                   <apex:outputText value="{!if(isBlank(Filename),'Upload your Image',Filename)}"/>
+                                                   <i class="fa fa-paperclip" aria-hidden="true"></i>
+                                                </span>
+                                                <apex:actionFunction action="{!myAttactmentmethod}" name="file_upload"/>
+                                                <span class="input-group-btn">
+                                                   <a data-toggle="collapse" data-parent="#accordion" href="#collapse1">
+                                                      <apex:commandButton action="{!savecomment}" value="Send" reRender="commntid,modal1,errmsg" style="width:100;height:100" styleClass="comment-button btn-info"/>
+                                                      <!-- <button type="button" class="comment-button btn-info" style="padding: 6px 23px; "   onclick="myComment(this.id);" >Send</button> -->
+                                                   </a>
+                                                </span>
+                                             </div>
+                                          </td>
+                                       </tr>
+                                    </table>
+                                 </apex:outputPanel>
+                              </td>
+                           </tr>
+                        </table>
+                        
+                        
+                        
+                     </div>
+                  </div>
+               </div>
+            </div>
+            
+         </apex:outputpanel>
+         <!-- code for attachmnet start------->
+        <!-- code for attachmnet start------->
+         <apex:outputPanel rendered="{!SHowpage==true}">
+           <!--- <c:head_include ></c:head_include>
+            <c:portal_Script ></c:portal_Script> -->
+            <apex:outputPanel styleClass="modal12" layout="block" rendered="true" id="panel3">
+               <div class="modal-div1">
+                  <!--navbar menu-->
+                  <section class="navbar-info">
+                     <div id="imageview-center">
+                        <nav class="navbar navbar-default navbar-me">
+                           <div class="container-fluid ">
+                              <div class="navbar-header">
+                                 <a class="navbar-brand site-logo" href="#">
+                                    <apex:image url="{!URLFOR($Resource.img, 'img/logo.png')}"/>
+                                 </a>
+                              </div>
+                           </div>
+                        </nav>
+                     </div>
+                  </section> 
+                  <apex:commandbutton value="Back" action="{!backmethod}" styleclass="action-button btn-info" style="font-size:20px;width:100%;height:20%"/>
+               </div>
+            </apex:outputPanel>
+            <apex:iframe src="/apex/DragDropToCloud__DragDropUploader?parent_id={!PageId}"  id="theIframe" rendered="{!showdragANDdrop==true}" height="630px"/>
+         </apex:outputPanel>
+         <!-- code for attachmnet stop------->
+         <!--##############################ON MOUSEOVER SHOW CASE Details#############################################-->
+         <section>
+              <c:portal_footer />
+              <a id="back2Top" href="#" title="Go to Top">&#10148;</a>
+          </section>
+         
+         <!--#############################FOOTER SECTION################################--->
+         <!-- end of navbar-->    
+      </body>
+      <!-- End Default Content REMOVE THIS -->
+   </apex:form>
+</apex:page>
+*******************************************Apex Controller********************************************
+/****************************************************
+        Author: Anita
+        Created Date:14/11/2018
+        Created For: This apex class is implemented for showing data of case and product related to User on portal on "Case" object. User can send any attachment through portal.
+                     Customer can comment through portal. Comments of both Customer and Support would be shown as in chat form.
+****************************************************/
+
+public class DistributorViewDetailsCntrl_Clone {
+    public boolean showComment {
+        get;
+        set;
+    }
+    public boolean showModal1 {
+        get;
+        set;
+    }
+    public boolean showModal2 {
+        get;
+        set;
+    }
+    public boolean sClose {
+        get;
+        set;
+    }
+    public boolean FqClose {
+        get;
+        set;
+    }
+    public String attId {
+        get;
+        set;
+    }
+    
+    public string caestypereason {
+       get;
+       set;
+    }
+    public static string idd;
+    public static Id attachmentid;
+    public static Blob body;
+    public static Id customerId;
+    public contact con {
+        get;
+        set;
+    }
+    public string NewComment {
+        get;
+        set;
+    } // comment by customer
+
+    //variables for attachmentb added by indresh
+    public string PageId {
+        get;
+        set;
+    }
+    public string Filename {
+        get;
+        set;
+    }
+    public boolean showdragANDdrop {
+        get;
+        set;
+    }
+    public boolean SHowpage {
+        get;
+        set;
+    }
+
+    public DistributorViewDetailsCntrl_Clone() {
+        PageId = ApexPages.currentPage().getParameters().get('id');
+        SHowpage = false;
+        showdragANDdrop = false;
+        showComment = false;
+        showModal1 = false;
+        showModal2 = false;
+        string conid = apexpages.currentpage().getparameters().get('id');
+        con = new contact();
+        con = [select id, name from contact where id =:conid];
+    }
+    //To get data of Case    
+    public case getcaseView() {
+        string conid = apexpages.currentpage().getparameters().get('id');
+        string caseid = apexpages.currentpage().getparameters().get('caseid');
+        case cas = new case();
+        cas = [select Id, Contact.Name, Contact_Name__c, CreatedDate, createdDate__c, LastModifiedDate, lastModifiedDate__c, Owner.Name, Purchase_Date_F__c, Complaint_Type__c, Complain_Number1__c, Purchase_Date__c, Extended_Warranty_Taken__c, Contactid, Model_Number__c, ContactEmail, Extended_Warranty_Duration__c, Status, Case_Number__c, CaseNumber, Product__r.Name, Product_List__c, Product_Name__c, Description, Reason, Type, Bill_Number__c, If_customer_has_Team_viewer__c, GDPR__c, Product_Family__c, Serial_Number__c from case where id =:caseid];
+        system.debug('==cas==='+cas);
+        caestypereason = cas.Reason;
+        system.debug('====caestypereason====='+caestypereason);
+        return cas;
+    }
+    
+    //Added start by krrish 16-01-2016
+    public List<Form_Information__c> getforminformation(){
+    
+     string caseid = apexpages.currentpage().getparameters().get('caseid');
+     
+     List<Form_Information__c> fcc = new List<Form_Information__c>();
+     Case cc = new Case();
+    // cc = [select Id,(Select id,Contact_Name__c,Contact_Phone__c,Location__c,Project_description__c,Firmware_version__c,Scalar_version__c,Version__c,Teamviewer_ID__c,Teamviewer_Password__c,Description__c,RecordTypeId,Tool__c,System_Info__c,System_description__c,System__c,Software_version__c,Scalar_firmware__c,NDA_established__c,Monitor_type__c,Monitor_Firmware__c,Installation__c,Device__c,CAM_card_version__c,Cabling_structure__c,App_Version__c,Additional_hardware__c,Units_affected__c from Case_Reason_Information__r) from Case where Id =:caseid ];
+   fcc = [Select id,Contact_Name__c,Contact_Phone__c,Location__c,Project_description__c,Firmware_version__c,Scalar_version__c,Version__c,Teamviewer_ID__c,Teamviewer_Password__c,Description__c,RecordTypeId,Tool__c,System_Info__c,System_description__c,System__c,Software_version__c,Scalar_firmware__c,NDA_established__c,Monitor_type__c,Monitor_Firmware__c,Installation__c,Device__c,CAM_card_version__c,Cabling_structure__c,App_Version__c,Additional_hardware__c,Units_affected__c from Form_Information__c  where Case__c=:caseid ];
+
+   /* for(Form_Information__c ficc : cc.Case_Reason_Information__r){
+        
+               fcc.add(ficc);
+       }  */
+       if(fcc.size()>0)
+             return fcc;
+        else 
+            return null;
+    
+    }
+        //Added end by krrish 16-01-2016
+
+    
+    //For Comments   
+    public List < Customer_and_Support_Comments__c > getCommentModalMethod() {
+        string caseid = apexpages.currentpage().getparameters().get('caseid');
+        //List<Customer_Comment__c> cust= new List<Customer_Comment__c>();
+        List < Customer_and_Support_Comments__c > custsupport = new List < Customer_and_Support_Comments__c > ();
+        //cust  =[select id,Case__c,CreatedDate,Comment__c from Customer_Comment__c where Case__c =:caseid Order by CreatedDate DESC];
+        custsupport = [select id, Case__c, CreatedDate, Comment__c, CreatedById, CreatedBy.Name, Comment_By__c from Customer_and_Support_Comments__c where Case__c =: caseid Order by CreatedDate DESC];
+        return custsupport;
+    }
+    public void ShowHideComment() {
+        showComment = true;
+    }
+    public void HideComment() {
+        showComment = false;
+    }
+    public void ShowModal1_method() {
+        showModal1 = true;
+    }
+    public void CLoseModal1_method() {
+        showModal1 = false;
+    }
+    public void ShowModal2_method() {
+        sClose = false;
+        FqClose = false;
+        showModal2 = true;
+    }
+    public void CLoseModal2_method() {
+        showModal2 = false;
+    }
+
+
+    //Comment functionality    
+    public void savecomment() {
+        if (NewComment != '' && NewComment != null) {
+            system.debug('NewComment' + NewComment);
+            string caseid = apexpages.currentpage().getparameters().get('caseid');
+            Customer_Comment__c cc = new Customer_Comment__c();
+            cc.Comment__c = NewComment;
+            cc.Case__c = caseid;
+            if (String.isNotBlank(cc.Comment__c)) {
+                insert cc;
+            }
+
+
+            Customer_and_Support_Comments__c cus = new Customer_and_Support_Comments__c();
+            cus.Comment_By__c = 'Customer';
+            cus.Comment__c = NewComment;
+            cus.Case__c = caseid;
+
+            if (String.isNotBlank(cus.Comment__c)) {
+                insert cus;
+            }
+            ShowModal1_method();
+            NewComment = '';
+            showComment = false;
+        } else {
+            //system.debug('errorclass');
+            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.WARNING, 'Please add comment and then save'));
+        }
+    }
+
+    public void fCaseClosemethod() {
+        string caseid = apexpages.currentpage().getparameters().get('caseid');
+        case cas = [select id, Status, CaseNumber from case where id =:caseid];
+
+        /* if(sClose==true && FqClose==true){
+            cas.Status='Resolved By Both(FAQ and Support Team)'; 
+         }*/
+        if (FqClose == true) {
+            cas.Status = 'Resolved by FAQ';
+        } else if (sClose == true) {
+            cas.Status = 'Resolved by support help';
+        }
+        update cas;
+        showModal2 = false;
+    }
+    // method to show attachment block  added by indresh
+    public PageReference myAttactmentmethod() {
+        showdragANDdrop = true;
+        SHowpage = true;
+        return null;
+    }
+    //method to back on main page from attachment block added by indresh
+    public void backmethod() {
+        String currentid = ApexPages.currentpage().getParameters().get('id');
+        DragDropToCloud__Cloud_Documents__c cc = new DragDropToCloud__Cloud_Documents__c();
+        cc = [select id, name from DragDropToCloud__Cloud_Documents__c where DragDropToCloud__Contact__c =: currentid order by createddate desc limit 1];
+        Filename = cc.name;
+        showdragANDdrop = false;
+        SHowpage = false;
+    }
+}
