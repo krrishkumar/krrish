@@ -1,0 +1,30 @@
+<apex:page standardStylesheets="false" showHeader="false" sidebar="false" docType="html-5.0" controller="viewAttachmentCntrl" >
+
+  <apex:iframe src="/apex/DragDropToCloud__ViewDocumentOnAmazon?id={!Image[0].id}" scrolling="true"/> 
+  
+</apex:page>
+******************************************Apex Controller************************************************************************
+public class viewAttachmentCntrl {
+ 
+       public List<DragDropToCloud__Cloud_Documents__c>  getImage(){
+        
+        string cloud_document = apexpages.currentpage().getparameters().get('id');
+        
+         List<DragDropToCloud__Cloud_Documents__c> dcc = new List<DragDropToCloud__Cloud_Documents__c>();
+         
+         try{
+         dcc =[select id,Name,DragDropToCloud__Contact__c,DragDropToCloud__Preview_Link__c from DragDropToCloud__Cloud_Documents__c where  id=:cloud_document];
+         system.debug('===DragDropToCloud__Preview_Link__c==='+dcc[0].DragDropToCloud__Preview_Link__c);
+         }
+         catch(Exception e){
+         }
+         
+         if(dcc.size()>0)
+             return dcc;
+         else
+             return null;
+        
+        }
+ 
+ 
+}
